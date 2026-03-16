@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pierrick Saumade — Technicien Supérieur Réseaux</title>
+    <meta name="description"
+        content="Portfolio de Pierrick Saumade, Technicien Supérieur en Systèmes & Réseaux. Administration réseau, cybersécurité, virtualisation et projets d'infrastructure." />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌐</text></svg>" />
+</head>
+
+<body>
+
+    <!-- Network Canvas Background -->
+    <canvas id="networkCanvas"></canvas>
+
+    <!-- ============================
+     NAVIGATION
+     ============================ -->
+    <nav id="navbar">
+        <a href="#hero" class="nav-logo">PS<span>/</span>SYS</a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#about">À Propos</a></li>
+            <li><a href="#skills">Compétences</a></li>
+            <li><a href="#projects">Projets</a></li>
+            <li><a href="#parcours">Parcours</a></li>
+            <li><a href="#cv">CV</a></li>
+            <li><a href="veille.html">Veille Tech</a></li>
+            <li><a href="#contact" class="nav-cta">✉ Contact</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+        </div>
+    </nav>
+
+    <!-- ============================
+     HERO SECTION
+     ============================ -->
+    <section id="hero">
+        <div class="hero-inner">
+            <!-- Left: Text -->
+            <div class="hero-content">
+                <div class="hero-eyebrow">Disponible pour opportunités</div>
+                <h1 class="hero-name">Pierrick<br>Saumade</h1>
+                <div class="hero-title">
+                    <span id="typedText" class="typed-text"></span><span class="cursor"></span>
+                </div>
+                <p class="hero-desc">
+                    Étudiant en 2ème année BTS SIO option SISR au Lycée Jean-Bart à Dunkerque,
+                    passionné par l'administration systèmes &amp; réseaux. Motivé, curieux et rigoureux,
+                    je cherche à mettre mes compétences au service de projets concrets.
+                </p>
+                <div class="hero-btns">
+                    <a href="#projects" class="btn-primary">🚀 Voir mes projets</a>
+                    <a href="#cv" class="btn-secondary">📄 Mon CV</a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" data-target="2">0</div>
+                        <div class="stat-label">Stages</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" data-target="1">0</div>
+                        <div class="stat-label">Projet</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" data-target="2">0</div>
+                        <div class="stat-label">Certifs</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" data-target="10">0</div>
+                        <div class="stat-label">Outils</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Visual -->
+            <div class="hero-visual">
+                <div class="hero-avatar-wrap">
+                    <div class="avatar-ring-outer"></div>
+                    <div class="avatar-ring"></div>
+                    <div class="avatar-inner">
+                        <div class="avatar-icon">🌐</div>
+                        <div class="avatar-badge">NET·ADMIN</div>
+                    </div>
+                    <div class="floating-badge b1">
+                        <span>🎯</span>
+                        <div>
+                            <div class="badge-name">PIX</div>
+                            <div style="font-size:0.7rem;color:var(--text-muted)">Certifié</div>
+                        </div>
+                    </div>
+                    <div class="floating-badge b2">
+                        <span>🔒</span>
+                        <div>
+                            <div class="badge-name">SecNumAcadémie</div>
+                            <div style="font-size:0.7rem;color:var(--text-muted)">ANSSI</div>
+                        </div>
+                    </div>
+                    <div class="floating-badge b3">
+                        <span>🌐</span>
+                        <div>
+                            <div class="badge-name">BTS SIO SISR</div>
+                            <div style="font-size:0.7rem;color:var(--text-muted)">En cours</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================
+     À PROPOS
+     ============================ -->
+    <section id="about">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="section-tag">// 01. À propos</div>
+                <h2 class="section-title">Qui suis-<span>je</span> ?</h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="about-grid">
+                <div class="about-photo-wrap reveal">
+                    <div class="about-photo-box">
+                        <div class="about-corner tl"></div>
+                        <div class="about-corner br"></div>
+                        <span style="font-size:6rem;z-index:1;">👨‍💻</span>
+                        <div class="about-photo-label">NET. TECHNICIAN</div>
+                    </div>
+                    <div class="about-info-card">
+                        <div class="info-card-title">Statut</div>
+                        <div class="info-card-value" style="color:var(--accent-green)">● Disponible</div>
+                    </div>
+                </div>
+                <div class="about-text reveal">
+                    <h3>Étudiant BTS SIO SISR — <span style="color:var(--accent-cyan)">Systèmes &amp; Réseaux</span>
+                    </h3>
+                    <p>
+                        Étudiant en deuxième année BTS SIO option SISR au Lycée Jean-Bart à Dunkerque,
+                        passionné par l'administration systèmes et réseaux. À travers mes stages, j'ai acquis
+                        une expérience concrète en administration réseau, virtualisation et développement web.
+                    </p>
+                    <p>
+                        Lors de mon stage chez ValoxyIT, j'ai configuré des postes clients (Windows 11, AD,
+                        VPN Stormshield), migré un site WordPress et déployé un environnement Proxmox avec
+                        Windows Server 2019, NPS, RADIUS et Omada Controller.
+                    </p>
+                    <p>
+                        Motivé, curieux et rigoureux, je suis toujours en veille technologique et cherche
+                        à approfondir mes compétences en cybersécurité et administration d'infrastructures.
+                    </p>
+                    <div class="about-pills">
+                        <div class="pill"><span class="pill-dot"></span>Proxmox VE</div>
+                        <div class="pill"><span class="pill-dot"></span>Windows Server / AD</div>
+                        <div class="pill"><span class="pill-dot"></span>VPN Stormshield</div>
+                        <div class="pill"><span class="pill-dot"></span>HTML / CSS / JS</div>
+                        <div class="pill"><span class="pill-dot"></span>WordPress / Apache</div>
+                        <div class="pill"><span class="pill-dot"></span>FOG Project / Sysprep</div>
+                        <div class="pill"><span class="pill-dot"></span>DNS Cloudflare / SSL</div>
+                        <div class="pill"><span class="pill-dot"></span>NAS Synology</div>
+                        <div class="pill"><span class="pill-dot"></span>Google Sheets API</div>
+                        <div class="pill"><span class="pill-dot"></span>Nagios / N-Sight</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================
+     COMPÉTENCES
+     ============================ -->
+    <section id="skills">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="section-tag">// 02. Compétences</div>
+                <h2 class="section-title">Stack <span>Technique</span></h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="skills-grid">
+
+                <!-- Systèmes & Réseau -->
+                <div class="skill-card reveal">
+                    <div class="skill-card-header">
+                        <div class="skill-icon cyan">💻</div>
+                        <div>
+                            <div class="skill-card-title">Systèmes &amp; Réseau</div>
+                            <div class="skill-card-sub">Administration &amp; Configuration</div>
+                        </div>
+                    </div>
+                    <div class="skill-bars">
+                        <div class="skill-bar-item">
+                            <div class="skill-bar-label"><span>Windows Server / AD</span><span>78%</span></div>
+                            <div class="skill-bar-track">
+                                <div class="skill-bar-fill" data-width="78"></div>
+                            </div>
+                        </div>
+                        <div class="skill-bar-item">
+                            <div class="skill-bar-label"><span>VPN Stormshield / BitLocker</span><span>70%</span></div>
+                            <div class="skill-bar-track">
+                                <div class="skill-bar-fill" data-width="70"></div>
+                            </div>
+                        </div>
+                        <div class="skill-bar-item">
+                            <div class="skill-bar-label"><span>DNS / DHCP / RADIUS / NPS</span><span>72%</span></div>
+                            <div class="skill-bar-track">
+                                <div class="skill-bar-fill" data-width="72"></div>
+                            </div>
+                        </div>
+                        <div class="skill-bar-item">
+                            <div class="skill-bar-label"><span>Supervision N-Sight / Nagios</span><span>65%</span></div>
+                            <div class="skill-bar-track">
+                                <div class="skill-bar-fill" data-width="65"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Virtualisation -->
+                <div class="skill-card reveal">
+                    <div class="skill-card-header">
+                        <div class="skill-icon purple">🖥️</div>
+                        <div>
+                            <div class="skill-card-title">Virtualisation</div>
+                            <div class="skill-card-sub">Proxmox, VMware, Oracle</div>
+                        </div>
+                    </div>
+                    <div class="skill-bars">
+                        <div class="skill-bar-item">
+                            <div class="skill-bar-label"><span>Proxmox VE</span><span>75%</span></div>
+                            <div class="skill-bar-track">
+                                <div class="skill-bar-fill purple" data-width="75"></div>
+                            </div>
+                        </div>
+                        <div class="skill-bar-item">
+                            <div class="skill-bar-label"><span>VMware / VirtualBox</span><span>65%</span></div>
+                            <div class="skill-bar-track">
+                                <div class="skill-bar-fill purple" data-width="65"></div>
+                            </div>
+                        </div>
+                        <div class="skill-bar-item">
+                            <div class="skill-bar-label"><span>FOG Project / Sysprep / ADK</span><span>68%</span></div>
+                            <div class="skill-bar-track">
+                                <div class="skill-bar-fill purple" data-width="68"></div>
+                            </div>
+                        </div>
+                        <div class="skill-bar-item">
+                            <div class="skill-bar-label"><span>NAS Synology / Sauvegarde</span><span>60%</span></div>
+                            <div class="skill-bar-track">
+                                <div class="skill-bar-fill purple" data-width="60"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Développement Web -->
+                <div class="skill-card reveal">
+                    <div class="skill-card-header">
+                        <div class="skill-icon blue">🌐</div>
+                        <div>
+                            <div class="skill-card-title">Développement Web</div>
+                            <div class="skill-card-sub">HTML, CSS, JavaScript, CMS</div>
+                        </div>
+                    </div>
+                    <div class="skill-bars">
+                        <div class="skill-bar-item">
+                            <div class="skill-bar-label"><span>HTML / CSS / JavaScript</span><span>80%</span></div>
+                            <div class="skill-bar-track">
+                                <div class="skill-bar-fill" data-width="80"></div>
+                            </div>
+                        </div>
+                        <div class="skill-bar-item">
+                            <div class="skill-bar-label"><span>WordPress / Apache</span><span>72%</span></div>
+                            <div class="skill-bar-track">
+                                <div class="skill-bar-fill" data-width="72"></div>
+                            </div>
+                        </div>
+                        <div class="skill-bar-item">
+                            <div class="skill-bar-label"><span>Google Sheets API / YouTube API</span><span>68%</span>
+                            </div>
+                            <div class="skill-bar-track">
+                                <div class="skill-bar-fill" data-width="68"></div>
+                            </div>
+                        </div>
+                        <div class="skill-bar-item">
+                            <div class="skill-bar-label"><span>SSL Certbot / DNS Cloudflare</span><span>70%</span></div>
+                            <div class="skill-bar-track">
+                                <div class="skill-bar-fill" data-width="70"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pack Office & Outils -->
+                <div class="skill-card reveal">
+                    <div class="skill-card-header">
+                        <div class="skill-icon green">🛠️</div>
+                        <div>
+                            <div class="skill-card-title">Outils &amp; Bureautique</div>
+                            <div class="skill-card-sub">Pack Office, CMS, Supervision</div>
+                        </div>
+                    </div>
+                    <div class="skill-bars">
+                        <div class="skill-bar-item">
+                            <div class="skill-bar-label"><span>Pack Office (Excel, Word...)</span><span>85%</span></div>
+                            <div class="skill-bar-track">
+                                <div class="skill-bar-fill green" data-width="85"></div>
+                            </div>
+                        </div>
+                        <div class="skill-bar-item">
+                            <div class="skill-bar-label"><span>CMS (WordPress, Wix...)</span><span>75%</span></div>
+                            <div class="skill-bar-track">
+                                <div class="skill-bar-fill green" data-width="75"></div>
+                            </div>
+                        </div>
+                        <div class="skill-bar-item">
+                            <div class="skill-bar-label"><span>Office 365 / Azure AD</span><span>70%</span></div>
+                            <div class="skill-bar-track">
+                                <div class="skill-bar-fill green" data-width="70"></div>
+                            </div>
+                        </div>
+                        <div class="skill-bar-item">
+                            <div class="skill-bar-label"><span>Omada Controller / Wi-Fi</span><span>60%</span></div>
+                            <div class="skill-bar-track">
+                                <div class="skill-bar-fill green" data-width="60"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Certifications -->
+            <div class="certs-strip reveal">
+                <div class="cert-badge"><span class="ce">🎯</span> PIX — Certifié</div>
+                <div class="cert-badge"><span class="ce">🔒</span> SecNumAcadémie — ANSSI</div>
+                <div class="cert-badge"><span class="ce">🎓</span> BTS SIO SISR (en cours)</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================
+     PROJETS
+     ============================ -->
+    <section id="projects">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="section-tag">// 03. Projets</div>
+                <h2 class="section-title">Mes <span>Réalisations</span></h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="projects-grid">
+
+                <!-- Projet — Site web Vikings de Villeneuve d'Ascq (stage) -->
+                <div class="project-card reveal">
+                    <div class="project-header">
+                        <div class="project-icon c1">🌐</div>
+                        <span class="project-status status-done">Terminé — Stage</span>
+                    </div>
+                    <div class="project-body">
+                        <div class="project-title">Site Web Multi-Pages — Vikings de Villeneuve d'Ascq</div>
+                        <p class="project-desc">
+                            Développement d'un site web multi-pages (HTML/CSS/JS) pour un club sportif de 600+ membres.
+                            Automatisation de la gestion de contenu via Google Sheets API, intégration YouTube et
+                            calendrier dynamique. Réduction de 80% de la charge administrative grâce aux fonctionnalités
+                            automatisées.
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">HTML / CSS / JS</span>
+                            <span class="tag">Google Sheets API</span>
+                            <span class="tag">YouTube API</span>
+                            <span class="tag">Responsive</span>
+                            <span class="tag">Stage 2026</span>
+                        </div>
+                    </div>
+                    <div class="project-footer">
+                        <a href="#" class="project-link">🔗 Voir le site</a>
+                        <a href="#" class="project-link">📄 Documentation</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================
+     PARCOURS (Expérience + Formation)
+     ============================ -->
+    <section id="parcours">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="section-tag">// 04. Parcours</div>
+                <h2 class="section-title">Expérience & <span>Formation</span></h2>
+                <div class="section-line"></div>
+            </div>
+
+            <div class="parcours-tabs reveal">
+                <button class="tab-btn active" onclick="switchTab('experience')">💼 Expérience</button>
+                <button class="tab-btn" onclick="switchTab('formation')">🎓 Formation</button>
+            </div>
+
+            <!-- Expérience -->
+            <div id="experience" class="tab-content active">
+                <div class="timeline">
+
+                    <!-- Stage Vikings de Villeneuve d'Ascq -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-date">01/2026 → 02/2026 — 6 semaines</div>
+                        <div class="timeline-card">
+                            <div class="timeline-title">Stage — Développeur Web</div>
+                            <div class="timeline-org">Les Vikings de Villeneuve d'Ascq — 59</div>
+                            <div class="timeline-desc">
+                                Développement d'un site web multi-pages (HTML/CSS/JS) pour un club sportif de 600+
+                                membres.
+                                <ul>
+                                    <li>Automatisation de la gestion de contenu via Google Sheets API</li>
+                                    <li>Intégration d'APIs tierces (YouTube, calendrier dynamique)</li>
+                                    <li>Réduction de 80% de la charge administrative</li>
+                                    <li>Interfaces responsives et accessibles</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stage ValoxyIT -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-date">06/2025 — La Madeleine</div>
+                        <div class="timeline-card">
+                            <div class="timeline-title">Stage — Administration Systèmes &amp; Réseaux</div>
+                            <div class="timeline-org">ValoxyIT — La Madeleine, 59</div>
+                            <div class="timeline-desc">
+                                Stage d'administration systèmes et réseaux dans un contexte professionnel réel.
+                                <ul>
+                                    <li>Configuration postes clients (Windows 11, AD, VPN Stormshield, BitLocker,
+                                        N-Sight)</li>
+                                    <li>Migration complète d'un site WordPress (MySQL, SSL Certbot, Apache, DNS
+                                        Cloudflare)</li>
+                                    <li>Déploiement d'images systèmes (Sysprep, ADK, FOG Project, Ventoy)</li>
+                                    <li>Environnement de test Proxmox : Windows Server 2019, ADDS, NPS, RADIUS, Omada
+                                        Controller</li>
+                                    <li>Gestion NAS Synology, PRA, sauvegardes externalisées, firewall Stormshield</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Intérim Supplay -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-date">2023 — 2024 — Lille</div>
+                        <div class="timeline-card">
+                            <div class="timeline-title">Intérimaire</div>
+                            <div class="timeline-org">Supplay — Lille</div>
+                            <div class="timeline-desc">
+                                Mission d'intérim en tant que manutentionnaire. Rigueur, ponctualité et adaptabilité en
+                                environnement industriel.
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Formation -->
+            <div id="formation" class="tab-content">
+                <div class="timeline">
+
+                    <!-- BTS SIO -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-date">2024 — 2026</div>
+                        <div class="timeline-card">
+                            <div class="timeline-title">BTS SIO — option SISR</div>
+                            <div class="timeline-org">Lycée Jean-Bart — Dunkerque</div>
+                            <div class="timeline-desc">
+                                Brevet de Technicien Supérieur Services Informatiques aux Organisations, spécialité
+                                Solutions d'Infrastructure, Systèmes et Réseaux.
+                                <ul>
+                                    <li>Administration réseaux et systèmes</li>
+                                    <li>Cybersécurité et virtualisation</li>
+                                    <li>Projets d'infrastructure en binome</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bac Général -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-date">2021 — 2023</div>
+                        <div class="timeline-card">
+                            <div class="timeline-title">Baccalauréat Général</div>
+                            <div class="timeline-org">Lycée Faidherbe — Lille</div>
+                            <div class="timeline-desc">
+                                Spécialités SES, Mathématiques et NSI (Numérique et Sciences Informatiques).
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BAFA -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-date">2022</div>
+                        <div class="timeline-card">
+                            <div class="timeline-title">BAFA</div>
+                            <div class="timeline-org">Brevet d'Aptitude aux Fonctions d'Animateur</div>
+                            <div class="timeline-desc">
+                                Formation complète BAFA, permettant l'encadrement de groupes de jeunes.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Brevet -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-date">2020</div>
+                        <div class="timeline-card">
+                            <div class="timeline-title">Brevet des Collèges</div>
+                            <div class="timeline-org">Collège Charlemagne</div>
+                            <div class="timeline-desc">Diplôme national du Brevet, mention obtenue.</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ============================
+     CV PREVIEW
+     ============================ -->
+    <section id="cv">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="section-tag">// 05. Curriculum Vitae</div>
+                <h2 class="section-title">Mon <span>CV</span></h2>
+                <div class="section-line"></div>
+            </div>
+
+            <div class="cv-preview reveal">
+                <!-- CV Header -->
+                <div class="cv-top-bar">
+                    <div class="cv-avatar">👨‍💻</div>
+                    <div class="cv-top-info">
+                        <h2>Pierrick Saumade</h2>
+                        <p>Étudiant BTS SIO — option SISR</p>
+                    </div>
+                    <div class="cv-top-contact">
+                        <div class="cv-contact-item"><span>📍</span> Lille, France</div>
+                        <div class="cv-contact-item"><span>📧</span> pierrick.saumade0605@gmail.com</div>
+                        <div class="cv-contact-item"><span>📱</span> +33 6 58 86 44 67</div>
+                        <div class="cv-contact-item"><span>🔗</span>
+                            linkedin.com/in/pierrick-saumade-aba6a729b</div>
+                    </div>
+                </div>
+
+                <!-- CV Body -->
+                <div class="cv-body">
+                    <!-- Left column -->
+                    <div class="cv-col cv-col-left">
+
+                        <div class="cv-section">
+                            <div class="cv-section-title">Compétences Clés</div>
+                            <div class="cv-skill-row">
+                                <span>Proxmox / VMware</span>
+                                <div class="cv-skill-dots">
+                                    <div class="dot filled"></div>
+                                    <div class="dot filled"></div>
+                                    <div class="dot filled"></div>
+                                    <div class="dot"></div>
+                                    <div class="dot"></div>
+                                </div>
+                            </div>
+                            <div class="cv-skill-row">
+                                <span>Windows Server / AD</span>
+                                <div class="cv-skill-dots">
+                                    <div class="dot filled"></div>
+                                    <div class="dot filled"></div>
+                                    <div class="dot filled"></div>
+                                    <div class="dot"></div>
+                                    <div class="dot"></div>
+                                </div>
+                            </div>
+                            <div class="cv-skill-row">
+                                <span>VPN Stormshield</span>
+                                <div class="cv-skill-dots">
+                                    <div class="dot filled"></div>
+                                    <div class="dot filled"></div>
+                                    <div class="dot filled"></div>
+                                    <div class="dot"></div>
+                                    <div class="dot"></div>
+                                </div>
+                            </div>
+                            <div class="cv-skill-row">
+                                <span>HTML / CSS / JavaScript</span>
+                                <div class="cv-skill-dots">
+                                    <div class="dot filled"></div>
+                                    <div class="dot filled"></div>
+                                    <div class="dot filled"></div>
+                                    <div class="dot filled"></div>
+                                    <div class="dot"></div>
+                                </div>
+                            </div>
+                            <div class="cv-skill-row">
+                                <span>WordPress / Apache</span>
+                                <div class="cv-skill-dots">
+                                    <div class="dot filled"></div>
+                                    <div class="dot filled"></div>
+                                    <div class="dot filled"></div>
+                                    <div class="dot"></div>
+                                    <div class="dot"></div>
+                                </div>
+                            </div>
+                            <div class="cv-skill-row">
+                                <span>FOG Project / Sysprep</span>
+                                <div class="cv-skill-dots">
+                                    <div class="dot filled"></div>
+                                    <div class="dot filled"></div>
+                                    <div class="dot filled"></div>
+                                    <div class="dot"></div>
+                                    <div class="dot"></div>
+                                </div>
+                            </div>
+                            <div class="cv-skill-row">
+                                <span>Pack Office / CMS</span>
+                                <div class="cv-skill-dots">
+                                    <div class="dot filled"></div>
+                                    <div class="dot filled"></div>
+                                    <div class="dot filled"></div>
+                                    <div class="dot filled"></div>
+                                    <div class="dot"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cv-section">
+                            <div class="cv-section-title">Certifications</div>
+                            <div class="cv-skill-row"><span>🎯 PIX</span><span
+                                    style="color:var(--accent-green);font-size:0.75rem;">Certifié</span></div>
+                            <div class="cv-skill-row"><span>🔒 SecNumAcadémie</span><span
+                                    style="color:var(--accent-green);font-size:0.75rem;">ANSSI</span></div>
+                        </div>
+
+                        <div class="cv-section">
+                            <div class="cv-section-title">Langues</div>
+                            <div class="cv-lang"><span>Français</span><span class="lang-level">Natif</span></div>
+                            <div class="cv-lang"><span>Anglais</span><span class="lang-level">B2 – Professionnel</span>
+                            </div>
+                            <div class="cv-lang"><span>Espagnol</span><span class="lang-level">A2 – Notions</span></div>
+                        </div>
+
+                    </div>
+
+                    <!-- Right column -->
+                    <div class="cv-col">
+
+                        <div class="cv-section">
+                            <div class="cv-section-title">Expérience Professionnelle</div>
+                            <div class="cv-exp-item">
+                                <div class="cv-exp-title">Stage — Développeur Web</div>
+                                <div class="cv-exp-org">Les Vikings de Villeneuve d'Ascq</div>
+                                <div class="cv-exp-date">01/2026 → 02/2026 (6 semaines)</div>
+                                <div class="cv-exp-desc">Site web multi-pages HTML/CSS/JS pour un club de 600+ membres.
+                                    Google Sheets API, YouTube API, interfaces responsives. −8 de 80% de la charge
+                                    administrative.</div>
+                            </div>
+                            <div class="cv-exp-item">
+                                <div class="cv-exp-title">Stage — Administration Systèmes &amp; Réseaux</div>
+                                <div class="cv-exp-org">ValoxyIT — La Madeleine</div>
+                                <div class="cv-exp-date">06/2025</div>
+                                <div class="cv-exp-desc">Config. postes clients (W11, AD, VPN Stormshield, BitLocker,
+                                    N-Sight), migration WordPress, déploiement images (FOG Project, Sysprep, Ventoy),
+                                    env. test Proxmox (WS2019, RADIUS, Omada), NAS Synology.</div>
+                            </div>
+                            <div class="cv-exp-item">
+                                <div class="cv-exp-title">Intérimaire</div>
+                                <div class="cv-exp-org">Supplay — Lille</div>
+                                <div class="cv-exp-date">2023 — 2024</div>
+                                <div class="cv-exp-desc">Manutentionnaire. Rigueur, ponctualité et adaptabilité.</div>
+                            </div>
+                        </div>
+
+                        <div class="cv-section">
+                            <div class="cv-section-title">Formation</div>
+                            <div class="cv-exp-item">
+                                <div class="cv-exp-title">BTS SIO — option SISR</div>
+                                <div class="cv-exp-org">Lycée Jean-Bart — Dunkerque</div>
+                                <div class="cv-exp-date">2024 — 2026</div>
+                                <div class="cv-exp-desc">Administration réseaux/systèmes, cybersécurité, virtualisation.
+                                </div>
+                            </div>
+                            <div class="cv-exp-item">
+                                <div class="cv-exp-title">Baccalauréat Général</div>
+                                <div class="cv-exp-org">Lycée Faidherbe — Lille</div>
+                                <div class="cv-exp-date">2021 — 2023</div>
+                                <div class="cv-exp-desc">Spécialités SES, Mathématiques et NSI.</div>
+                            </div>
+                            <div class="cv-exp-item">
+                                <div class="cv-exp-title">BAFA</div>
+                                <div class="cv-exp-org">Brevet d'Aptitude aux Fonctions d'Animateur</div>
+                                <div class="cv-exp-date">2022</div>
+                                <div class="cv-exp-desc">Formation complète BAFA.</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Download bar -->
+                <div class="cv-download-bar">
+                    <p>📄 Version complète disponible en téléchargement</p>
+                    <a href="CV_Pierrick_Saumade.pdf" download class="btn-primary"
+                        style="font-size:0.85rem;padding:0.6rem 1.4rem;">
+                        ⬇ Télécharger le CV (PDF)
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================
+     CONTACT
+     ============================ -->
+    <section id="contact">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="section-tag">// 06. Contact</div>
+                <h2 class="section-title">Travaillons <span>Ensemble</span></h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="contact-grid">
+                <div class="contact-info reveal">
+                    <h3>Vous avez un projet<br>ou une opportunité ?</h3>
+                    <p>
+                        Je suis ouvert aux missions freelance, postes en CDI/CDD et collaborations techniques.
+                        N'hésitez pas à me contacter, je réponds sous 24h.
+                    </p>
+                    <div class="contact-items">
+                        <a href="mailto:pierrick.saumade0605@gmail.com" class="contact-item">
+                            <div class="contact-item-icon">📧</div>
+                            <div class="contact-item-text">
+                                <div class="contact-item-label">Email</div>
+                                <div class="contact-item-value">pierrick.saumade0605@gmail.com</div>
+                            </div>
+                        </a>
+                        <a href="tel:+33612345678" class="contact-item">
+                            <div class="contact-item-icon">📱</div>
+                            <div class="contact-item-text">
+                                <div class="contact-item-label">Téléphone</div>
+                                <div class="contact-item-value">+33 6 58 86 44 67</div>
+                            </div>
+                        </a>
+                        <a href="https://www.linkedin.com/in/pierrick-saumade-aba6a729b/" target="_blank"
+                            class="contact-item">
+                            <div class="contact-item-icon">💼</div>
+                            <div class="contact-item-text">
+                                <div class="contact-item-label">LinkedIn</div>
+                                <div class="contact-item-value">linkedin.com/in/pierrick-saumade</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="contact-form reveal">
+                    <form id="contactForm" onsubmit="sendMessage(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="fname">Prénom</label>
+                                <input type="text" id="fname" placeholder="Jean" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="lname">Nom</label>
+                                <input type="text" id="lname" placeholder="Dupont" required />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" placeholder="jean.dupont@email.com" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="sujet">Sujet</label>
+                            <input type="text" id="sujet" placeholder="Proposition de mission / Recrutement ..."
+                                required />
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" rows="5" placeholder="Décrivez votre projet ou opportunité..."
+                                required></textarea>
+                        </div>
+                        <button type="submit" class="btn-submit" id="submitBtn">
+                            <span id="btnText">✉ Envoyer le message</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================
+     FOOTER
+     ============================ -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-logo">PS<span>/</span>SYS</div>
+            <div class="footer-text">© 2026 Pierrick Saumade — Technicien Supérieur Réseaux · Lille, France</div>
+            <div class="footer-social">
+                <a href="https://www.linkedin.com/in/pierrick-saumade-aba6a729b/" target="_blank" class="social-link"
+                    title="LinkedIn">💼</a>
+                <a href="mailto:pierrick.saumade0605@gmail.com" class="social-link" title="Email">📧</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
