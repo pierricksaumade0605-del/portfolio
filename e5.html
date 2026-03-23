@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Épreuve E5 — Pierrick Saumade</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌳</text></svg>" />
+    <style>
+        :root {
+            --cyan: #00e5ff;
+            --purple: #7c4dff;
+            --border-e5: rgba(0, 229, 255, 0.2);
+            --card-e5: rgba(10, 25, 50, 0.8);
+            --r: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #networkCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.3; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+        #e5-tree-container { padding-top: 100px; padding-bottom: 100px; display: flex; flex-direction: column; align-items: center; }
+        .tree-header { text-align: center; margin-bottom: 3rem; }
+        .tree-header h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 850; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff 40%, var(--cyan) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .tree-header p { color: var(--text-secondary, #7a92b0); font-size: 1rem; }
+        .tree-nav-container { width: 100%; max-width: 1000px; position: relative; }
+        .nav-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; min-height: 40px; }
+        .breadcrumb { color: var(--text-secondary, #7a92b0); font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .breadcrumb span { cursor: pointer; transition: 0.3s; }
+        .breadcrumb span:hover { color: var(--cyan); }
+        .breadcrumb .active { color: var(--cyan); pointer-events: none; }
+        .back-btn { color: var(--cyan); font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; background: rgba(0,229,255,0.05); border: 1px solid var(--border-e5); padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; visibility: hidden; opacity: 0; transition: 0.3s; }
+        .back-btn.show { visibility: visible; opacity: 1; }
+        .back-btn:hover { background: rgba(0,229,255,0.15); border-color: var(--cyan); }
+        .tree-viewport { width: 100%; overflow: hidden; position: relative; border-radius: 30px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-e5); min-height: 550px; }
+        .level-wrapper { display: flex; transition: var(--r); width: 300%; align-items: flex-start; }
+        .level { width: 33.333%; padding: 3rem 2rem; display: flex; flex-direction: column; align-items: center; }
+        .cat-nodes { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; width: 100%; }
+        .node { background: var(--card-e5); border: 1px solid var(--border-e5); border-radius: 24px; padding: 2.5rem; text-align: center; cursor: pointer; transition: var(--r); backdrop-filter: blur(15px); position: relative; display: flex; flex-direction: column; justify-content: center; min-height: 200px; }
+        .node:hover { transform: translateY(-8px); border-color: var(--cyan); box-shadow: 0 0 40px rgba(0, 229, 255, 0.15); }
+        .node h2 { font-size: 1.5rem; color: #fff; margin-bottom: 0.8rem; font-weight: 700; }
+        .node p { color: var(--text-secondary, #7a92b0); font-size: 0.9rem; line-height: 1.5; }
+        .node .node-badge { position: absolute; top: 1.5rem; right: 1.5rem; color: var(--cyan); font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        .comp-nodes { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; width: 100%; opacity: 0; transform: scale(0.95); transition: 0.5s 0.2s; }
+        .level-active .comp-nodes { opacity: 1; transform: scale(1); }
+        .comp-node { text-align: left; padding: 1.8rem; min-height: auto; }
+        .comp-node h3 { font-size: 1.2rem; color: var(--cyan); margin-bottom: 0.6rem; font-weight: 600; }
+        .bloc-badge { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: var(--purple); background: rgba(124, 77, 255, 0.1); border: 1px solid rgba(124, 77, 255, 0.15); padding: 2px 8px; border-radius: 4px; display: inline-block; margin-bottom: 1rem; }
+        .proof-detail { width: 100%; display: flex; flex-direction: column; gap: 2.5rem; animation: fadeInUp 0.5s ease-out; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .proof-img { border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); background: #000; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .proof-img img { width: 100%; height: auto; display: block; filter: brightness(0.9); }
+        .proof-info { padding: 0 1rem; }
+        .proof-info h2 { color: #fff; font-size: 2rem; font-weight: 800; margin-bottom: 1rem; }
+        .proof-info .meta { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
+        .proof-info p { color: var(--text-secondary, #7a92b0); font-size: 1.1rem; line-height: 1.8; }
+        .no-proof { color: var(--text-secondary, #7a92b0); padding: 2rem; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; border: 1px dashed var(--border-e5); border-radius: 16px; }
+        @media (max-width: 768px) {
+            .level { padding: 2rem 1rem; }
+            .comp-nodes { grid-template-columns: 1fr; }
+            .node { padding: 1.5rem; min-height: 150px; }
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="networkCanvas"></canvas>
+
+    <nav id="navbar">
+        <a href="index.html" class="nav-logo">PS<span>/</span>SYS</a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html#about">À Propos</a></li>
+            <li><a href="index.html#skills">Compétences</a></li>
+            <li><a href="index.html#projects">Projets</a></li>
+            <li><a href="index.html#parcours">Parcours</a></li>
+            <li><a href="index.html#cv">CV</a></li>
+            <li><a href="veille.html">Veille Tech</a></li>
+            <li><a href="e5.html" class="active">Épreuve E5</a></li>
+            <li><a href="index.html#contact" class="nav-cta">✉ Contact</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+        </div>
+    </nav>
+
+    <div class="container" id="e5-tree-container">
+        <div class="tree-header">
+            <h1>Arborescence E5</h1>
+            <p>Structure hiérarchique de mes réalisations professionnelles</p>
+        </div>
+        <div class="tree-nav-container">
+            <div class="nav-controls">
+                <div class="breadcrumb" id="breadcrumb">
+                    <span onclick="goRoot()">Racine</span>
+                </div>
+                <button class="back-btn" id="backBtn" onclick="goBack()">← Retour</button>
+            </div>
+            <div class="tree-viewport">
+                <div class="level-wrapper" id="levelWrapper">
+                    <div class="level" id="level1">
+                        <div class="cat-nodes">
+                            <div class="node" onclick="selectCat('scolaire')">
+                                <span class="node-badge">Scolaire</span>
+                                <h2>En Formation</h2>
+                                <p>Projets académiques et ateliers techniques réalisés en cours.</p>
+                            </div>
+                            <div class="node" onclick="selectCat('stage1')">
+                                <span class="node-badge">Year 1</span>
+                                <h2>Stage 1ère Année</h2>
+                                <p>Immersion professionnelle chez ValoxyIT — Solutions Réseau.</p>
+                            </div>
+                            <div class="node" onclick="selectCat('stage2')">
+                                <span class="node-badge">Year 2</span>
+                                <h2>Stage 2ème Année</h2>
+                                <p>Immersion professionnelle chez Vikings — Dev & Admin.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="level" id="level2">
+                        <div class="comp-nodes" id="compContainer"></div>
+                    </div>
+                    <div class="level" id="level3">
+                        <div id="proofContainer"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-logo">PS<span>/</span>SYS</div>
+            <div class="footer-text">© 2026 Pierrick Saumade — BTS SIO SISR — Portfolio Dynamique</div>
+            <div class="footer-social">
+                <a href="https://www.linkedin.com/in/pierrick-saumade-aba6a729b/" target="_blank" class="social-link" title="LinkedIn">💼</a>
+                <a href="mailto:pierrick.saumade0605@gmail.com" class="social-link" title="Email">📧</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            document.getElementById('navLinks').classList.toggle('open');
+            document.getElementById('hamburger').classList.toggle('open');
+        }
+        window.addEventListener('scroll', () => {
+            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        const treeData = {
+        "scolaire": {
+                "title": "En Formation",
+                "items": [
+                        {
+                                "id": "ad",
+                                "title": "Active Directory",
+                                "bloc": "Bloc 1 & 2",
+                                "desc": "Installation de Windows Server 2012, gestion des GPO, rôles DNS et DHCP pour une infrastructure centralisée.",
+                                "imgs": [
+                                        "Années Sco/Installation et configuration d’un Serveur AD Windows 2012 afin de gérer une infrastructure/AD (2).png",
+                                        "Années Sco/Installation et configuration d’un Serveur AD Windows 2012 afin de gérer une infrastructure/AD (3).png",
+                                        "Années Sco/Installation et configuration d’un Serveur AD Windows 2012 afin de gérer une infrastructure/AD.png"
+                                ]
+                        },
+                        {
+                                "id": "nagios",
+                                "title": "Supervision Nagios",
+                                "bloc": "Bloc 2",
+                                "desc": "Monitoring actif des hôtes et services réseau avec alertes SNMP et dashboarding personnalisé.",
+                                "imgs": [
+                                        "Années Sco/Mis en place d’un serveur de supervision (Nagios, LibreNMS)/SupervisionNagios.png"
+                                ]
+                        },
+                        {
+                                "id": "haproxy",
+                                "title": "Load Balancing HAProxy",
+                                "bloc": "Bloc 2",
+                                "desc": "Implémentation de HAProxy pour la haute disponibilité et répartition de charge de serveurs web.",
+                                "imgs": [
+                                        "Années Sco/Mise en place d’un Load Balancing (HAProxy)/Création.png"
+                                ]
+                        },
+                        {
+                                "id": "redmine",
+                                "title": "Gestion de Projet Redmine",
+                                "bloc": "Bloc 1",
+                                "desc": "Pilotage de réalisations via Redmine : Gantt, suivi du temps et documentation structurée.",
+                                "imgs": [
+                                        "Années Sco/Gestion de projet (Redmine)/Redmine.png",
+                                        "Années Sco/redmine/Capture d'écran 2026-03-23 081053.png"
+                                ]
+                        },
+                        {
+                                "id": "natpat",
+                                "title": "Redirection NAT / PAT",
+                                "bloc": "Bloc 2",
+                                "desc": "Configuration de règles de redirection de ports et translation d'adresses pour l'accès aux services internes.",
+                                "imgs": [
+                                        "Années Sco/Mise en place de redirection NAT PAT/Port Forwarding.png"
+                                ]
+                        },
+                        {
+                                "id": "cobian",
+                                "title": "Sauvegarde Cobian Backup",
+                                "bloc": "Bloc 2",
+                                "desc": "Mise en place d'un dispositif de sauvegarde et restauration à distance avec Cobian Backup.",
+                                "imgs": [
+                                        "Années Sco/Mise en place d’un dispositif de sauvegarde et de restauration à distance (Cobian Backup)/DB(Web).png",
+                                        "Années Sco/Mise en place d’un dispositif de sauvegarde et de restauration à distance (Cobian Backup)/Idologis.png",
+                                        "Années Sco/Mise en place d’un dispositif de sauvegarde et de restauration à distance (Cobian Backup)/SauvegardeDossier.png",
+                                        "Années Sco/Mise en place d’un dispositif de sauvegarde et de restauration à distance (Cobian Backup)/SauvegardeDossierInté.png"
+                                ]
+                        },
+                        {
+                                "id": "routeurs",
+                                "title": "Prise en main Routeurs",
+                                "bloc": "Bloc 2",
+                                "desc": "Configuration et administration de routeurs Cisco 891F et Linksys LRT214 : DHCP, port forwarding, sécurisation.",
+                                "imgs": [
+                                        "Années Sco/Prise en main de routeur (Cisco 891FRV042G, Linksys LRT214)/DHCP.png",
+                                        "Années Sco/Prise en main de routeur (Cisco 891FRV042G, Linksys LRT214)/Port Forwarding.png",
+                                        "Années Sco/Prise en main de routeur (Cisco 891FRV042G, Linksys LRT214)/RouteurLinksys.png",
+                                        "Années Sco/Prise en main de routeur (Cisco 891FRV042G, Linksys LRT214)/Screenshot 2026-03-23 142219.png"
+                                ]
+                        },
+                        {
+                                "id": "ssh",
+                                "title": "Sécurisation SSH & Fail2ban",
+                                "bloc": "Bloc 3",
+                                "desc": "Sécurisation de l'accès à un serveur via SSH et protection contre les attaques brute-force avec Fail2ban.",
+                                "imgs": [
+                                        "Années Sco/Sécurisation d’accés à un serveur (SSH, Fail2ban)/Apt install.png",
+                                        "Années Sco/Sécurisation d’accés à un serveur (SSH, Fail2ban)/Config 2ban 2.png",
+                                        "Années Sco/Sécurisation d’accés à un serveur (SSH, Fail2ban)/Config 2ban.png",
+                                        "Années Sco/Sécurisation d’accés à un serveur (SSH, Fail2ban)/Fail2Ban Install.png",
+                                        "Années Sco/Sécurisation d’accés à un serveur (SSH, Fail2ban)/Test.png"
+                                ]
+                        },
+                        {
+                                "id": "virtualisation",
+                                "title": "Virtualisation",
+                                "bloc": "Bloc 2",
+                                "desc": "Mise en œuvre de solutions de virtualisation avec Oracle VirtualBox pour la création d'environnements de test.",
+                                "imgs": [
+                                        "Années Sco/Virtualisation/Oracle.png"
+                                ]
+                        }
+                ]
+        },
+        "stage1": {
+                "title": "Stage 1 — ValoxyIT",
+                "items": [
+                        {
+                                "id": "omada",
+                                "title": "Point d'accès Omada",
+                                "bloc": "Bloc 2 & 3",
+                                "desc": "Mise en place de points d'accès Wi-Fi Omada avec authentification RADIUS pour les clients de l'entreprise.",
+                                "imgs": [
+                                        "Stage 1/Mise en place point d’accés omada pour client/Omada radius.png",
+                                        "Stage 1/Mise en place point d’accés omada pour client/PointDaccesOmada.jpg"
+                                ]
+                        },
+                        {
+                                "id": "ssl",
+                                "title": "SSL & Cloudflare",
+                                "bloc": "Bloc 3",
+                                "desc": "Sécurisation HTTPS via Certbot et optimisation de zone DNS via Cloudflare pour clients externes.",
+                                "imgs": [
+                                        "Stage 1/Sécurisation et optimisation de la visibilité web (Certificats SSL Certbot & DNS Cloudflare)/RefreshCertificat.png"
+                                ]
+                        },
+                        {
+                                "id": "radiusad",
+                                "title": "Serveur RADIUS avec AD",
+                                "bloc": "Bloc 2 & 3",
+                                "desc": "Création d'un serveur RADIUS avec Active Directory pour authentifier les connexions Wi-Fi.",
+                                "imgs": [
+                                        "Stage 1/Création d’un serveur radius avec AD pour authentifier les connection wifi (avec procédure)/266d0801-bf3f-4b51-9dae-0034303146ef.png",
+                                        "Stage 1/Création d’un serveur radius avec AD pour authentifier les connection wifi (avec procédure)/c87effd9-acbd-4e0a-85ed-661602fa9649.png"
+                                ]
+                        },
+                        {
+                                "id": "imageperso",
+                                "title": "Image Personnalisée",
+                                "bloc": "Bloc 2",
+                                "desc": "Création d'une image système personnalisée pour le déploiement de postes clients standardisés.",
+                                "imgs": [
+                                        "Stage 1/Création d’une image personnalisé/Config xml.png",
+                                        "Stage 1/Création d’une image personnalisé/IMG_1977.jpeg",
+                                        "Stage 1/Création d’une image personnalisé/IMG_1978.jpeg",
+                                        "Stage 1/Création d’une image personnalisé/c5373057-c2a3-4617-b2bb-28307e76eeb4.png",
+                                        "Stage 1/Création d’une image personnalisé/cac615d7-035e-4a1e-b90c-778b248f8632.png"
+                                ]
+                        },
+                        {
+                                "id": "migration",
+                                "title": "Migration Site WordPress",
+                                "bloc": "Bloc 1 & 2",
+                                "desc": "Migration d'un site WordPress vers un nouveau serveur, incluant SSL et base de données.",
+                                "imgs": [
+                                        "Stage 1/Migration d’un site vers un nouveau serveur (wordpress, SSL, BDD)/MigrationSiteWP.png"
+                                ]
+                        },
+                        {
+                                "id": "configposte",
+                                "title": "Configuration Poste Client",
+                                "bloc": "Bloc 2",
+                                "desc": "Configuration et préparation de postes clients en environnement professionnel.",
+                                "imgs": [
+                                        "Stage 1/Configuration poste client/Capture d'écran 2026-03-16 165515.png"
+                                ]
+                        },
+                        {
+                                "id": "deploiement",
+                                "title": "Solutions de Déploiement",
+                                "bloc": "Bloc 2",
+                                "desc": "Présentation et comparaison de solutions de déploiement d'image pour l'entreprise.",
+                                "imgs": [
+                                        "Stage 1/Présentation de solutions de déploiement d’image pour l’entreprise/1ca0f9e7-46e4-4329-8981-a3f15942fe0d.png",
+                                        "Stage 1/Présentation de solutions de déploiement d’image pour l’entreprise/Capture d'écran 2026-03-16 164927.png",
+                                        "Stage 1/Présentation de solutions de déploiement d’image pour l’entreprise/QRCode.png"
+                                ]
+                        }
+                ]
+        },
+        "stage2": {
+                "title": "Stage 2 — Vikings",
+                "items": [
+                        {
+                                "id": "physique",
+                                "title": "Baie & Infrastructure",
+                                "bloc": "Bloc 2",
+                                "desc": "Audit et déploiement physique d'une baie 42U avec câblage structuré Cat6A et brassage.",
+                                "imgs": [
+                                        "Stage 2/Audit et déploiement d'une infrastructure réseau physique (Baie 42U, Câblage Cat6A)/IMG_0303.jpg",
+                                        "Stage 2/Audit et déploiement d'une infrastructure réseau physique (Baie 42U, Câblage Cat6A)/IMG_0309.jpg",
+                                        "Stage 2/Audit et déploiement d'une infrastructure réseau physique (Baie 42U, Câblage Cat6A)/IMG_0350.jpg",
+                                        "Stage 2/Audit et déploiement d'une infrastructure réseau physique (Baie 42U, Câblage Cat6A)/IMG_0351.jpg"
+                                ]
+                        },
+                        {
+                                "id": "vikings",
+                                "title": "Développement Web Vikings",
+                                "bloc": "Bloc 1",
+                                "desc": "Création et automatisation du portail web Vikings avec intégration d'APIs Google Sheets.",
+                                "imgs": [
+                                        "Stage 2/Développement et automatisation du site web club sportif/FalgJoueursEtMenu.png",
+                                        "Stage 2/Développement et automatisation du site web club sportif/HOF.png",
+                                        "Stage 2/Développement et automatisation du site web club sportif/JoueurSeniorFBA.png",
+                                        "Stage 2/Développement et automatisation du site web club sportif/Staff.png",
+                                        "Stage 2/Développement et automatisation du site web club sportif/calendrier.png"
+                                ]
+                        },
+                        {
+                                "id": "ia",
+                                "title": "Veille & IA",
+                                "bloc": "Bloc 1",
+                                "desc": "Exploitation d'outils d'Intelligence Artificielle pour l'aide au développement et l'analyse technique.",
+                                "imgs": [
+                                        "Stage 2/Familiarisation IA/Antigravity.png"
+                                ]
+                        },
+                        {
+                                "id": "devssh",
+                                "title": "Mise en place SSH Dev",
+                                "bloc": "Bloc 2 & 3",
+                                "desc": "Configuration d'un environnement de développement distant via SSH sécurisé.",
+                                "imgs": [
+                                        "Stage 2/Mise en place dev ssh/Screenshot 2026-03-23 081615.png",
+                                        "Stage 2/Mise en place dev ssh/schéma.png"
+                                ]
+                        }
+                ]
+        }
+};
+
+        let currentLevel = 1;
+        let activeCatKey = null;
+
+        function selectCat(key) {
+            activeCatKey = key;
+            const container = document.getElementById('compContainer');
+            container.innerHTML = '';
+            treeData[key].items.forEach(item => {
+                const node = document.createElement('div');
+                node.className = 'node comp-node';
+                node.onclick = () => selectComp(item);
+                node.innerHTML = `<span class="bloc-badge">${item.bloc}</span><h3>${item.title}</h3><p>${item.desc}</p>`;
+                container.appendChild(node);
+            });
+            navigate(2);
+        }
+
+        function selectComp(item) {
+            const container = document.getElementById('proofContainer');
+            const imgs = item.imgs || [];
+            const imgsHtml = imgs.length > 0
+                ? imgs.map(img => `<div class="proof-img"><img src="${encodeURI(img)}" alt="${item.title}" onerror="this.parentElement.style.display='none'"></div>`).join('')
+                : '<div class="no-proof">Aucune preuve visuelle disponible pour ce projet.</div>';
+            container.innerHTML = `
+                <div class="proof-detail">
+                    <div class="proof-info">
+                        <div class="meta"><span class="bloc-badge">${item.bloc}</span></div>
+                        <h2>${item.title}</h2>
+                        <p>${item.desc}</p>
+                    </div>
+                    ${imgsHtml}
+                </div>`;
+            navigate(3, item.title);
+        }
+
+        function navigate(level, detailTitle = '') {
+            currentLevel = level;
+            const wrapper = document.getElementById('levelWrapper');
+            const breadcrumb = document.getElementById('breadcrumb');
+            const backBtn = document.getElementById('backBtn');
+            const l2 = document.getElementById('level2');
+            wrapper.style.transform = `translateX(-${(level - 1) * 33.333}%)`;
+            backBtn.classList.toggle('show', level > 1);
+            let html = '<span onclick="goRoot()">Racine</span>';
+            if (level >= 2) {
+                html += ` > <span class="${level === 2 ? 'active' : ''}" onclick="goBackToLevel2()">${treeData[activeCatKey].title}</span>`;
+                l2.classList.add('level-active');
+            }
+            if (level === 3) html += ` > <span class="active">${detailTitle}</span>`;
+            breadcrumb.innerHTML = html;
+        }
+
+        function goBack() { if (currentLevel === 3) goBackToLevel2(); else if (currentLevel === 2) goRoot(); }
+        function goRoot() { navigate(1); }
+        function goBackToLevel2() { if (activeCatKey) selectCat(activeCatKey); }
+
+        const canvas = document.getElementById('networkCanvas');
+        const ctx = canvas.getContext('2d');
+        let points = [];
+        function initC() {
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            points = Array.from({ length: 45 }, () => ({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3 }));
+        }
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            points.forEach(p => {
+                p.x += p.vx; p.y += p.vy;
+                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+                ctx.fillStyle = 'rgba(0,229,255,0.2)';
+                ctx.beginPath(); ctx.arc(p.x, p.y, 1, 0, Math.PI * 2); ctx.fill();
+            });
+            for (let i = 0; i < points.length; i++) {
+                for (let j = i + 1; j < points.length; j++) {
+                    const d = Math.hypot(points[i].x - points[j].x, points[i].y - points[j].y);
+                    if (d < 180) {
+                        ctx.strokeStyle = `rgba(0,229,255,${0.08 * (1 - d / 180)})`;
+                        ctx.beginPath(); ctx.moveTo(points[i].x, points[i].y); ctx.lineTo(points[j].x, points[j].y); ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(draw);
+        }
+        window.onresize = initC;
+        initC(); draw();
+
+        // Auto-navigation via URL params (?cat=stage2&comp=physique)
+        (function() {
+            const params = new URLSearchParams(window.location.search);
+            const cat = params.get('cat');
+            const compId = params.get('comp');
+            if (cat && treeData[cat]) {
+                selectCat(cat);
+                if (compId) {
+                    const item = treeData[cat].items.find(i => i.id === compId);
+                    if (item) selectComp(item);
+                }
+            }
+        })();
+    </script>
+</body>
+</html>

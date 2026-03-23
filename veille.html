@@ -1,0 +1,1721 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Veille Technologique — Pierrick Saumade</title>
+    <meta name="description"
+        content="Veille technologique de Pierrick Saumade (BTS SIO SISR) sur l'évolution des cybermenaces et des ransomwares." />
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔒</text></svg>" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet" />
+    <style>
+        /* ---- Variables & Reset ---- */
+        :root {
+            --bg: #050d1a;
+            --bg2: #0a1628;
+            --card: rgba(10, 25, 50, 0.75);
+            --cyan: #00e5ff;
+            --blue: #2979ff;
+            --purple: #7c4dff;
+            --green: #00e676;
+            --orange: #ff9100;
+            --text: #e8f4fd;
+            --muted: #7a92b0;
+            --dim: #4a6080;
+            --border: rgba(0, 229, 255, 0.18);
+            --borderS: rgba(255, 255, 255, 0.07);
+            --glow: 0 0 40px rgba(0, 229, 255, 0.12);
+            --r: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 70px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--cyan);
+            border-radius: 3px;
+        }
+
+        /* ---- Canvas ---- */
+        #networkCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        /* ---- Nav ---- */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 0 2rem;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(5, 13, 26, 0.88);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--borderS);
+            transition: var(--r);
+        }
+
+        nav.scrolled {
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+            border-bottom-color: var(--border);
+        }
+
+        .nav-logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--cyan);
+            text-decoration: none;
+            letter-spacing: 2px;
+        }
+
+        .nav-logo span {
+            color: var(--muted);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.8rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--muted);
+            font-size: 0.875rem;
+            font-weight: 500;
+            padding: 0.35rem 0;
+            position: relative;
+            transition: var(--r);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--cyan);
+            transition: width 0.3s ease;
+            box-shadow: 0 0 8px var(--cyan);
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--cyan);
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            background: rgba(0, 229, 255, 0.1) !important;
+            border: 1px solid var(--cyan) !important;
+            color: var(--cyan) !important;
+            padding: 0.4rem 1rem !important;
+            border-radius: 6px;
+            font-size: 0.82rem !important;
+        }
+
+        .nav-cta:hover {
+            background: var(--cyan) !important;
+            color: var(--bg) !important;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--cyan);
+            border-radius: 2px;
+            transition: var(--r);
+        }
+
+        /* ---- Container ---- */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        section {
+            position: relative;
+            z-index: 1;
+            padding: 6rem 0;
+        }
+
+        #hero-veille {
+            padding: 8rem 2rem 4rem;
+            min-height: 55vh;
+            display: flex;
+            align-items: center;
+        }
+
+        /* ---- Section Header ---- */
+        .section-tag {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--cyan);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+            opacity: 0.85;
+        }
+
+        .section-title {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 700;
+        }
+
+        .section-title span {
+            color: var(--cyan);
+        }
+
+        .section-line {
+            width: 60px;
+            height: 3px;
+            border-radius: 2px;
+            margin: 1rem auto 0;
+            background: linear-gradient(90deg, var(--cyan), var(--purple));
+            box-shadow: 0 0 12px rgba(0, 229, 255, 0.5);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        /* ---- Hero ---- */
+        .hero-wrap {
+            text-align: center;
+            max-width: 750px;
+            margin: 0 auto;
+        }
+
+        .hero-eyebrow {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            color: var(--cyan);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .hero-eyebrow::before,
+        .hero-eyebrow::after {
+            content: '';
+            display: inline-block;
+            width: 30px;
+            height: 2px;
+            background: var(--cyan);
+            box-shadow: 0 0 8px var(--cyan);
+        }
+
+        .hero-name {
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #ffffff 30%, var(--cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.8rem;
+        }
+
+        .hero-sub {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--purple);
+            margin-bottom: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .hero-desc {
+            color: var(--muted);
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.8rem;
+            background: var(--cyan);
+            color: var(--bg);
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: var(--r);
+            box-shadow: 0 0 25px rgba(0, 229, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 35px rgba(0, 229, 255, 0.5);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.8rem;
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--borderS);
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: var(--r);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--cyan);
+            color: var(--cyan);
+            transform: translateY(-2px);
+        }
+
+        /* ---- Cards (Outils) ---- */
+        .outils-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .outil-card {
+            background: var(--card);
+            border: 1px solid var(--borderS);
+            border-radius: 16px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            transition: var(--r);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .outil-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--cyan), var(--purple));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .outil-card:hover {
+            border-color: var(--border);
+            box-shadow: var(--glow);
+            transform: translateY(-4px);
+        }
+
+        .outil-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .outil-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            margin: 0 auto 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+        }
+
+        .ic-purple {
+            background: rgba(124, 77, 255, 0.12);
+            box-shadow: 0 0 15px rgba(124, 77, 255, 0.15);
+        }
+
+        .ic-cyan {
+            background: rgba(0, 229, 255, 0.10);
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.15);
+        }
+
+        .ic-blue {
+            background: rgba(41, 121, 255, 0.10);
+            box-shadow: 0 0 15px rgba(41, 121, 255, 0.15);
+        }
+
+        .ic-green {
+            background: rgba(0, 230, 118, 0.10);
+            box-shadow: 0 0 15px rgba(0, 230, 118, 0.15);
+        }
+
+        .ic-orange {
+            background: rgba(255, 145, 0, 0.10);
+            box-shadow: 0 0 15px rgba(255, 145, 0, 0.15);
+        }
+
+        .outil-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.6rem;
+        }
+
+        .outil-desc {
+            font-size: 0.82rem;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .outil-tag {
+            display: inline-block;
+            margin-top: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(0, 229, 255, 0.08);
+            color: var(--cyan);
+            border: 1px solid var(--border);
+        }
+
+        /* ---- Timeline ---- */
+        .timeline {
+            position: relative;
+            padding-left: 2.5rem;
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--cyan), var(--purple), transparent);
+            border-radius: 2px;
+        }
+
+        .tl-item {
+            position: relative;
+            margin-bottom: 2.5rem;
+        }
+
+        .tl-dot {
+            position: absolute;
+            left: -2.6rem;
+            top: 0.4rem;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 3px solid var(--bg);
+            z-index: 1;
+        }
+
+        .tl-date {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--cyan);
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        .tl-card {
+            background: var(--card);
+            border: 1px solid var(--borderS);
+            border-radius: 16px;
+            padding: 1.5rem 1.8rem;
+            backdrop-filter: blur(20px);
+            transition: var(--r);
+        }
+
+        .tl-card:hover {
+            border-color: var(--border);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .tl-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .tl-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem;
+            padding: 0.2rem 0.65rem;
+            border-radius: 4px;
+            border: 1px solid;
+        }
+
+        .tl-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.3rem;
+        }
+
+        .tl-source {
+            font-size: 0.8rem;
+            color: var(--cyan);
+            font-weight: 500;
+            margin-bottom: 0.85rem;
+        }
+
+        .tl-body {
+            font-size: 0.875rem;
+            color: var(--muted);
+            line-height: 1.75;
+        }
+
+        .tl-body p {
+            margin-bottom: 0.6rem;
+        }
+
+        .tl-body p:last-child {
+            margin-bottom: 0;
+        }
+
+        .tl-impact {
+            margin-top: 0.8rem;
+            padding: 0.7rem 1rem;
+            background: rgba(0, 229, 255, 0.04);
+            border-left: 3px solid var(--cyan);
+            border-radius: 0 8px 8px 0;
+            font-size: 0.83rem;
+            color: var(--text);
+        }
+
+        .tl-impact strong {
+            color: var(--cyan);
+        }
+
+        /* ---- Analyse ---- */
+        .analyse-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .analyse-card {
+            background: var(--card);
+            border: 1px solid var(--borderS);
+            border-radius: 16px;
+            padding: 1.5rem;
+            backdrop-filter: blur(20px);
+            transition: var(--r);
+        }
+
+        .analyse-card:hover {
+            border-color: var(--border);
+            box-shadow: var(--glow);
+        }
+
+        .analyse-card h4 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .analyse-card ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .analyse-card ul li {
+            font-size: 0.83rem;
+            color: var(--muted);
+            padding-left: 1.2rem;
+            position: relative;
+        }
+
+        .analyse-card ul li::before {
+            content: '›';
+            position: absolute;
+            left: 0;
+            color: var(--cyan);
+            font-weight: 700;
+        }
+
+        /* ---- Tool Detail Button ---- */
+        .outil-detail-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-top: 1rem;
+            padding: 0.45rem 1rem;
+            background: rgba(0, 229, 255, 0.08);
+            color: var(--cyan);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--r);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .outil-detail-btn:hover {
+            background: var(--cyan);
+            color: var(--bg);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* ---- Modal ---- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 15, 0.85);
+            backdrop-filter: blur(12px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.35s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, var(--bg2) 0%, rgba(10, 25, 50, 0.95) 100%);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            max-width: 580px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            transform: translateY(30px) scale(0.95);
+            transition: transform 0.35s ease;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5), 0 0 60px rgba(0, 229, 255, 0.08);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1.2rem;
+            right: 1.2rem;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid var(--borderS);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--r);
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 60, 60, 0.15);
+            border-color: rgba(255, 60, 60, 0.4);
+            color: #ff6b6b;
+        }
+
+        .modal-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--cyan);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-section-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--cyan);
+            margin-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .modal-section p,
+        .modal-section li {
+            font-size: 0.85rem;
+            color: var(--muted);
+            line-height: 1.75;
+        }
+
+        .modal-section ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .modal-section ul li {
+            padding-left: 1.2rem;
+            position: relative;
+        }
+
+        .modal-section ul li::before {
+            content: '›';
+            position: absolute;
+            left: 0;
+            color: var(--cyan);
+            font-weight: 700;
+        }
+
+        .modal-freq {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.4rem 0.9rem;
+            background: rgba(0, 230, 118, 0.08);
+            border: 1px solid rgba(0, 230, 118, 0.25);
+            border-radius: 8px;
+            color: var(--green);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .modal-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.5rem 1.2rem;
+            background: rgba(0, 229, 255, 0.08);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--cyan);
+            text-decoration: none;
+            font-size: 0.82rem;
+            font-weight: 600;
+            transition: var(--r);
+        }
+
+        .modal-link:hover {
+            background: var(--cyan);
+            color: var(--bg);
+        }
+
+        /* ---- Article Link ---- */
+        .tl-article-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-top: 0.8rem;
+            padding: 0.4rem 0.9rem;
+            background: rgba(0, 229, 255, 0.06);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--cyan);
+            text-decoration: none;
+            font-size: 0.78rem;
+            font-weight: 500;
+            transition: var(--r);
+        }
+
+        .tl-article-link:hover {
+            background: var(--cyan);
+            color: var(--bg);
+        }
+
+        /* ---- Footer ---- */
+        footer {
+            position: relative;
+            z-index: 1;
+            border-top: 1px solid var(--borderS);
+            padding: 2rem;
+            background: rgba(5, 13, 26, 0.5);
+        }
+
+        .footer-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-logo {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--cyan);
+            letter-spacing: 2px;
+            font-size: 0.95rem;
+        }
+
+        .footer-logo span {
+            color: var(--muted);
+        }
+
+        .footer-text {
+            font-size: 0.8rem;
+            color: var(--dim);
+        }
+
+        .footer-back {
+            font-size: 0.82rem;
+            color: var(--muted);
+            text-decoration: none;
+            border: 1px solid var(--borderS);
+            border-radius: 6px;
+            padding: 0.35rem 0.9rem;
+            transition: var(--r);
+        }
+
+        .footer-back:hover {
+            color: var(--cyan);
+            border-color: var(--cyan);
+        }
+
+        /* ---- Responsive ---- */
+        @media (max-width: 900px) {
+            .analyse-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links.open {
+                display: flex;
+                flex-direction: column;
+                position: fixed;
+                inset: 70px 0 0 0;
+                background: rgba(5, 13, 26, 0.97);
+                backdrop-filter: blur(20px);
+                padding: 2rem;
+                gap: 1.5rem;
+                z-index: 999;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .outils-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .hero-btns {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .outils-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="networkCanvas"></canvas>
+
+    <!-- NAV -->
+    <nav id="navbar">
+        <a href="index.html" class="nav-logo">PS<span>/</span>SYS</a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html#about">À Propos</a></li>
+            <li><a href="index.html#skills">Compétences</a></li>
+            <li><a href="index.html#projects">Projets</a></li>
+            <li><a href="index.html#parcours">Parcours</a></li>
+            <li><a href="#" class="active">Veille Tech</a></li>
+            <li><a href="e5.html">Épreuve E5</a></li>
+            <li><a href="index.html#contact" class="nav-cta">✉ Contact</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section id="hero-veille">
+        <div class="hero-wrap">
+            <div class="hero-eyebrow">Épreuve E5 — BTS SIO SISR</div>
+            <h1 class="hero-name">Veille Technologique</h1>
+            <div class="hero-sub">// Cybersécurité & Évolution des Ransomwares</div>
+            <p class="hero-desc">
+                Dans le cadre de ma formation en BTS SIO option SISR, j'ai mis en place un système de veille
+                informationnelle structuré pour suivre l'évolution constante des cybermenaces.
+                Comprendre les attaques en profondeur est indispensable pour concevoir, administrer et
+                sécuriser les infrastructures réseaux modernes.
+            </p>
+            <div class="hero-btns">
+                <a href="#outils" class="btn-primary">🛠️ Outils de Veille</a>
+                <a href="#articles" class="btn-secondary">📰 Flux d'Articles</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- OUTILS -->
+    <section id="outils">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag">// 01. Méthodologie</div>
+                <h2 class="section-title">Sources & <span>Outils de Collecte</span></h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="outils-grid">
+
+                <div class="outil-card" onclick="openModal('feedly')">
+                    <div class="outil-icon ic-purple">📰</div>
+                    <div class="outil-title">Feedly (Flux RSS)</div>
+                    <p class="outil-desc">Agrégation centralisée des principaux blogs cybersécurité : BleepingComputer,
+                        TheHackerNews, Krebs on Security.</p>
+                    <span class="outil-tag">Agrégateur RSS</span>
+                    <br><button class="outil-detail-btn">🔎 Voir la mise en place</button>
+                </div>
+
+                <div class="outil-card" onclick="openModal('certfr')">
+                    <div class="outil-icon ic-cyan">🛡️</div>
+                    <div class="outil-title">CERT-FR & ANSSI</div>
+                    <p class="outil-desc">Abonnement aux bulletins d'alerte officiels de l'ANSSI et du CERT-FR pour les
+                        avis et alertes de sécurité critiques (CVE).</p>
+                    <span class="outil-tag">Officiel France</span>
+                    <br><button class="outil-detail-btn">🔎 Voir la mise en place</button>
+                </div>
+
+                <div class="outil-card" onclick="openModal('galerts')">
+                    <div class="outil-icon ic-blue">🔔</div>
+                    <div class="outil-title">Google Alerts</div>
+                    <p class="outil-desc">Alertes automatisées par mots-clés : "Ransomware", "Active Directory breach",
+                        "CVE critique", "Zero-day". Push mail quotidien.</p>
+                    <span class="outil-tag">Automatisation</span>
+                    <br><button class="outil-detail-btn">🔎 Voir la mise en place</button>
+                </div>
+
+                <div class="outil-card" onclick="openModal('twitter')">
+                    <div class="outil-icon ic-orange">🐦</div>
+                    <div class="outil-title">X (Twitter)</div>
+                    <p class="outil-desc">Suivi de chercheurs en sécurité (@troyhunt, @thegrugq), d'éditeurs (Sophos,
+                        CrowdStrike) et du hashtag #InfoSec.</p>
+                    <span class="outil-tag">Communauté</span>
+                    <br><button class="outil-detail-btn">🔎 Voir la mise en place</button>
+                </div>
+
+                <div class="outil-card" onclick="openModal('podcasts')">
+                    <div class="outil-icon ic-green">🎙️</div>
+                    <div class="outil-title">Podcasts & Newsletters</div>
+                    <p class="outil-desc">Écoute hebdomadaire de "No Limite Secu" et lecture de la newsletter ZATAZ pour
+                        une veille en français adaptée au niveau BTS.</p>
+                    <span class="outil-tag">FR / Accessible</span>
+                    <br><button class="outil-detail-btn">🔎 Voir la mise en place</button>
+                </div>
+
+                <div class="outil-card" onclick="openModal('enisa')">
+                    <div class="outil-icon ic-cyan">🇪🇺</div>
+                    <div class="outil-title">ENISA & NVD (NIST)</div>
+                    <p class="outil-desc">Consultation des rapports de l'Agence Européenne de Cybersécurité (ENISA) et
+                        du National Vulnerability Database pour les CVE mondiales.</p>
+                    <span class="outil-tag">International</span>
+                    <br><button class="outil-detail-btn">🔎 Voir la mise en place</button>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- MODALS OUTILS -->
+    <div class="modal-overlay" id="modal-feedly" onclick="closeModalOutside(event)">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <div class="modal-icon ic-purple">📰</div>
+            <div class="modal-title">Feedly (Flux RSS)</div>
+            <div class="modal-subtitle">Agrégateur RSS — Mis en place en mars 2024</div>
+            <div class="modal-section">
+                <div class="modal-section-title">⚙️ Comment j'ai configuré l'outil</div>
+                <ul>
+                    <li>Création d'un compte Feedly gratuit en mars 2024</li>
+                    <li>Ajout de 3 flux RSS principaux : BleepingComputer, The Hacker News, Krebs on Security</li>
+                    <li>Organisation dans une catégorie dédiée « Cybersécurité & Ransomware »</li>
+                    <li>Activation des notifications pour les articles contenant "ransomware", "CVE", "zero-day"</li>
+                    <li>Consultation via l'application mobile et desktop</li>
+                </ul>
+            </div>
+            <div class="modal-section">
+                <div class="modal-section-title">🕐 Fréquence de consultation</div>
+                <span class="modal-freq">📅 Quotidien — 10–15 min le matin</span>
+            </div>
+            <div class="modal-section">
+                <div class="modal-section-title">📌 Flux suivis</div>
+                <ul>
+                    <li>BleepingComputer — bleepingcomputer.com/feed</li>
+                    <li>The Hacker News — feeds.feedburner.com/TheHackersNews</li>
+                    <li>Krebs on Security — krebsonsecurity.com/feed</li>
+                </ul>
+            </div>
+            <a href="https://feedly.com" target="_blank" class="modal-link">🔗 Accéder à Feedly</a>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-certfr" onclick="closeModalOutside(event)">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <div class="modal-icon ic-cyan">🛡️</div>
+            <div class="modal-title">CERT-FR & ANSSI</div>
+            <div class="modal-subtitle">Organisme officiel — Suivi depuis mars 2024</div>
+            <div class="modal-section">
+                <div class="modal-section-title">⚙️ Comment j'ai configuré l'outil</div>
+                <ul>
+                    <li>Inscription à la mailing list du CERT-FR (cert.ssi.gouv.fr) en mars 2024</li>
+                    <li>Abonnement au flux RSS des avis de sécurité et alertes</li>
+                    <li>Consultation régulière de la page « Alertes de sécurité » pour les CVE critiques</li>
+                    <li>Suivi des guides de bonnes pratiques ANSSI (hygiène informatique, AD, etc.)</li>
+                </ul>
+            </div>
+            <div class="modal-section">
+                <div class="modal-section-title">🕐 Fréquence de consultation</div>
+                <span class="modal-freq">📅 Hebdomadaire — Revue des bulletins chaque lundi</span>
+            </div>
+            <div class="modal-section">
+                <div class="modal-section-title">📌 Exemples d'alertes suivies</div>
+                <ul>
+                    <li>CERTFR-2024-AVI-0xxx — Vulnérabilités Fortinet FortiOS</li>
+                    <li>CERTFR-2025-ALE-001 — Alerte exploitation active Windows Server</li>
+                    <li>Guides ANSSI : sécurisation Active Directory, PRA/PCA</li>
+                </ul>
+            </div>
+            <a href="https://www.cert.ssi.gouv.fr" target="_blank" class="modal-link">🔗 Accéder au CERT-FR</a>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-galerts" onclick="closeModalOutside(event)">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <div class="modal-icon ic-blue">🔔</div>
+            <div class="modal-title">Google Alerts</div>
+            <div class="modal-subtitle">Alertes automatisées — Actif depuis avril 2024</div>
+            <div class="modal-section">
+                <div class="modal-section-title">⚙️ Comment j'ai configuré l'outil</div>
+                <ul>
+                    <li>Connexion avec mon compte Google et accès à google.com/alerts</li>
+                    <li>Création de 4 alertes avec les mots-clés suivants :</li>
+                    <li>« Ransomware attack 2024 2025 » — Fréquence : 1x/jour</li>
+                    <li>« CVE critique infrastructure » — Fréquence : 1x/jour</li>
+                    <li>« Active Directory breach » — Fréquence : 1x/jour</li>
+                    <li>« Zero-day exploit cybersecurity » — Fréquence : immédiat</li>
+                    <li>Réception par email sur ma boîte dédiée veille</li>
+                </ul>
+            </div>
+            <div class="modal-section">
+                <div class="modal-section-title">🕐 Fréquence de consultation</div>
+                <span class="modal-freq">📅 Quotidien — Push mail automatique</span>
+            </div>
+            <a href="https://www.google.com/alerts" target="_blank" class="modal-link">🔗 Accéder à Google Alerts</a>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-twitter" onclick="closeModalOutside(event)">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <div class="modal-icon ic-orange">🐦</div>
+            <div class="modal-title">X (Twitter)</div>
+            <div class="modal-subtitle">Réseau social — Suivi depuis mars 2024</div>
+            <div class="modal-section">
+                <div class="modal-section-title">⚙️ Comment j'ai configuré l'outil</div>
+                <ul>
+                    <li>Création d'une liste privée « CyberVeille » sur X</li>
+                    <li>Ajout de comptes de chercheurs : @troyhunt, @thegrugq, @malaboratorium</li>
+                    <li>Ajout d'éditeurs de sécurité : @SophosXOps, @CrowdStrike, @RecordedFuture</li>
+                    <li>Suivi des hashtags : #InfoSec, #Ransomware, #CyberSecurity, #ThreatIntel</li>
+                    <li>Activation des notifications pour les comptes prioritaires</li>
+                </ul>
+            </div>
+            <div class="modal-section">
+                <div class="modal-section-title">🕐 Fréquence de consultation</div>
+                <span class="modal-freq">📅 Quotidien — Fil d'actualité ciblé</span>
+            </div>
+            <a href="https://x.com" target="_blank" class="modal-link">🔗 Accéder à X (Twitter)</a>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-podcasts" onclick="closeModalOutside(event)">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <div class="modal-icon ic-green">🎙️</div>
+            <div class="modal-title">Podcasts & Newsletters</div>
+            <div class="modal-subtitle">Veille audio & écrite — Depuis avril 2024</div>
+            <div class="modal-section">
+                <div class="modal-section-title">⚙️ Comment j'ai configuré l'outil</div>
+                <ul>
+                    <li>Abonnement au podcast « No Limit Secu » sur Spotify (épisodes hebdomadaires)</li>
+                    <li>Inscription à la newsletter ZATAZ de Damien Bancal (zataz.com)</li>
+                    <li>Abonnement à la newsletter « Next INpact / Sécurité »</li>
+                    <li>Écoute pendant les trajets et lecture le week-end</li>
+                </ul>
+            </div>
+            <div class="modal-section">
+                <div class="modal-section-title">🕐 Fréquence de consultation</div>
+                <span class="modal-freq">📅 Hebdomadaire — 1 épisode + newsletter</span>
+            </div>
+            <div class="modal-section">
+                <div class="modal-section-title">📌 Épisodes marquants</div>
+                <ul>
+                    <li>NoLimitSecu #420 — « Retour sur l'affaire Change Healthcare »</li>
+                    <li>NoLimitSecu #435 — « NIS2 : ce qui change pour les entreprises »</li>
+                    <li>ZATAZ — « LockBit : autopsie d'un démantèlement »</li>
+                </ul>
+            </div>
+            <a href="https://www.nolimitsecu.fr" target="_blank" class="modal-link">🔗 No Limit Secu</a>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-enisa" onclick="closeModalOutside(event)">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <div class="modal-icon ic-cyan">🇪🇺</div>
+            <div class="modal-title">ENISA & NVD (NIST)</div>
+            <div class="modal-subtitle">Bases internationales — Consultation depuis mai 2024</div>
+            <div class="modal-section">
+                <div class="modal-section-title">⚙️ Comment j'ai configuré l'outil</div>
+                <ul>
+                    <li>Consultation du rapport annuel ENISA Threat Landscape (ETL)</li>
+                    <li>Recherche de CVE spécifiques sur nvd.nist.gov lors d'alertes CERT-FR</li>
+                    <li>Suivi des rapports thématiques ENISA (ransomware, supply chain, etc.)</li>
+                    <li>Croisement des données NVD avec les alertes Google Alerts</li>
+                </ul>
+            </div>
+            <div class="modal-section">
+                <div class="modal-section-title">🕐 Fréquence de consultation</div>
+                <span class="modal-freq">📅 Mensuel — Rapport + recherche CVE ponctuelle</span>
+            </div>
+            <a href="https://www.enisa.europa.eu" target="_blank" class="modal-link">🔗 ENISA</a>
+            &nbsp;
+            <a href="https://nvd.nist.gov" target="_blank" class="modal-link">🔗 NVD (NIST)</a>
+        </div>
+    </div>
+
+    <!-- ARTICLES -->
+    <section id="articles">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag">// 02. Flux d'Actualités</div>
+                <h2 class="section-title">Articles <span>Sélectionnés</span></h2>
+                <div class="section-line"></div>
+            </div>
+
+            <div class="timeline">
+
+                <!-- Article — Mars 2026 -->
+                <div class="tl-item">
+                    <div class="tl-dot" style="background: var(--green); box-shadow: 0 0 10px var(--green);"></div>
+                    <div class="tl-date">Mars 2026</div>
+                    <div class="tl-card">
+                        <div class="tl-tags">
+                            <span class="tl-tag"
+                                style="background:rgba(0,230,118,0.08);color:var(--green);border-color:rgba(0,230,118,0.25);">Réglementation</span>
+                            <span class="tl-tag"
+                                style="background:rgba(41,121,255,0.08);color:var(--blue);border-color:rgba(41,121,255,0.25);">NIS2</span>
+                        </div>
+                        <div class="tl-title">NIS2 entre en application : nouvelles obligations cyber pour les
+                            entreprises européennes</div>
+                        <div class="tl-source">📡 Source : ANSSI / ZDNet France / Journal Officiel UE</div>
+                        <div class="tl-body">
+                            <p>La directive NIS2 (Network and Information Security) impose désormais des obligations
+                                renforcées en matière de cybersécurité pour les entreprises européennes, y compris les
+                                PME
+                                de secteurs essentiels. Les organisations doivent notifier les incidents sous 24h,
+                                mettre en
+                                place une gouvernance cyber, et réaliser des audits réguliers sous peine de sanctions
+                                financières pouvant atteindre 10M€ ou 2% du CA mondial.</p>
+                            <div class="tl-impact">
+                                <strong>🔧 Impact SISR :</strong> Se former aux exigences NIS2. Documenter les
+                                procédures
+                                de gestion d'incidents. Mettre en place un SIEM pour la détection et la notification
+                                rapide. Vérifier la conformité des sous-traitants.
+                            </div>
+                        </div>
+                        <a href="https://cyber.gouv.fr/la-directive-nis-2" target="_blank" class="tl-article-link">📄
+                            Lire sur ANSSI</a>
+                    </div>
+                </div>
+
+                <!-- Article 1 -->
+                <div class="tl-item">
+                    <div class="tl-dot" style="background: var(--purple); box-shadow: 0 0 10px var(--purple);"></div>
+                    <div class="tl-date">Février 2026</div>
+                    <div class="tl-card">
+                        <div class="tl-tags">
+                            <span class="tl-tag"
+                                style="background:rgba(124,77,255,0.1);color:var(--purple);border-color:rgba(124,77,255,0.3);">Ransomware</span>
+                            <span class="tl-tag"
+                                style="background:rgba(255,145,0,0.08);color:#ff9100;border-color:rgba(255,145,0,0.25);">Santé</span>
+                        </div>
+                        <div class="tl-title">Recrudescence des attaques ciblant les hôpitaux français</div>
+                        <div class="tl-source">📡 Source : CERT-FR / ANSSI — cert.ssi.gouv.fr</div>
+                        <div class="tl-body">
+                            <p>Une nouvelle vague de ransomwares de type LockBit 3.0 exploite des failles VPN non
+                                patchées (notamment sur les équipements Fortinet) pour pénétrer les réseaux
+                                hospitaliers. L'ANSSI presse les administrateurs d'activer la segmentation réseau et
+                                d'appliquer le principe de moindre privilège.</p>
+                            <div class="tl-impact">
+                                <strong>🔧 Impact SISR :</strong> Configurer des VLANs stricts entre les équipements
+                                médicaux et l'administration. Mettre en place des sauvegardes immuables (PBS, Veeam).
+                                Audit régulier des règles firewall Stormshield.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Article 2 -->
+                <div class="tl-item">
+                    <div class="tl-dot" style="background: var(--cyan); box-shadow: 0 0 10px var(--cyan);"></div>
+                    <div class="tl-date">Novembre 2025</div>
+                    <div class="tl-card">
+                        <div class="tl-tags">
+                            <span class="tl-tag"
+                                style="background:rgba(0,229,255,0.08);color:var(--cyan);border-color:rgba(0,229,255,0.25);">Active
+                                Directory</span>
+                            <span class="tl-tag"
+                                style="background:rgba(255,145,0,0.08);color:#ff9100;border-color:rgba(255,145,0,0.25);">Zero-Day</span>
+                        </div>
+                        <div class="tl-title">Faille critique Windows Server : contournement d'authentification Kerberos
+                        </div>
+                        <div class="tl-source">📡 Source : Microsoft Security Update (CVE-2025-XXXX) / BleepingComputer
+                        </div>
+                        <div class="tl-body">
+                            <p>Une vulnérabilité permettant à un attaquant non authentifié d'obtenir des droits
+                                administrateur sur un domaine Active Directory a été découverte et activement exploitée
+                                dans la nature. Elle est utilisée comme vecteur d'entrée pour déployer des ransomwares
+                                via des GPO malveillantes.</p>
+                            <div class="tl-impact">
+                                <strong>🔧 Impact SISR :</strong> Application prioritaire du Patch Tuesday sur les
+                                contrôleurs de domaine. Surveiller les Event ID 4624 / 4672 (Windows). Auditer les
+                                groupes AD (AdminSDHolder) et activer la Protection des utilisateurs sensibles.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Article 3 -->
+                <div class="tl-item">
+                    <div class="tl-dot" style="background: var(--blue); box-shadow: 0 0 10px var(--blue);"></div>
+                    <div class="tl-date">Septembre 2025</div>
+                    <div class="tl-card">
+                        <div class="tl-tags">
+                            <span class="tl-tag"
+                                style="background:rgba(41,121,255,0.08);color:var(--blue);border-color:rgba(41,121,255,0.25);">Virtualisation</span>
+                            <span class="tl-tag"
+                                style="background:rgba(124,77,255,0.1);color:var(--purple);border-color:rgba(124,77,255,0.3);">Proxmox
+                                VE</span>
+                        </div>
+                        <div class="tl-title">Les ransomwares ciblent désormais directement les hyperviseurs Proxmox et
+                            VMware</div>
+                        <div class="tl-source">📡 Source : The Hacker News / Sophos Threat Report 2025</div>
+                        <div class="tl-body">
+                            <p>Les groupes cybercriminels délaissent les postes clients au profit des serveurs de
+                                virtualisation. Des scripts bash automatisés compromettent les hyperviseurs Proxmox VE
+                                exposés sur internet et chiffrent tous les datastores en quelques minutes, rendant
+                                l'ensemble de l'infrastructure inaccessible.</p>
+                            <div class="tl-impact">
+                                <strong>🔧 Impact SISR :</strong> Isoler l'interface de gestion Proxmox sur un VLAN
+                                dédié. Ne jamais exposer le port 8006 sur internet. Déployer Proxmox Backup Server avec
+                                des sauvegardes hors-ligne. Activer l'authentification à deux facteurs (TOTP).
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Article 4 -->
+                <div class="tl-item">
+                    <div class="tl-dot" style="background: var(--green); box-shadow: 0 0 10px var(--green);"></div>
+                    <div class="tl-date">Mai 2025</div>
+                    <div class="tl-card">
+                        <div class="tl-tags">
+                            <span class="tl-tag"
+                                style="background:rgba(0,230,118,0.08);color:var(--green);border-color:rgba(0,230,118,0.25);">Phishing</span>
+                            <span class="tl-tag"
+                                style="background:rgba(41,121,255,0.08);color:var(--blue);border-color:rgba(41,121,255,0.25);">IA
+                                Générative</span>
+                        </div>
+                        <div class="tl-title">WormGPT : l'IA générative au service du phishing hyper-ciblé</div>
+                        <div class="tl-source">📡 Source : ZDNet France / ENISA Threat Landscape Report</div>
+                        <div class="tl-body">
+                            <p>Des LLMs malveillants comme WormGPT permettent aux attaquants de rédiger des emails de
+                                phishing parfaitement rédigés, en français, imitant la syntaxe et le ton des
+                                communications internes (Fraude au Président). Ces attaques constituent la porte
+                                d'entrée principale des ransomwares en entreprise.</p>
+                            <div class="tl-impact">
+                                <strong>🔧 Impact SISR :</strong> Sensibilisation obligatoire des utilisateurs
+                                (simulations de phishing). MFA imposé sur Office 365. Configurer des règles
+                                SPF/DKIM/DMARC sur le domaine. Filtres anti-spam avancés (EOP, Defender for Office 365).
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Article — Mars 2025 -->
+                <div class="tl-item">
+                    <div class="tl-dot" style="background: var(--purple); box-shadow: 0 0 10px var(--purple);"></div>
+                    <div class="tl-date">Mars 2025</div>
+                    <div class="tl-card">
+                        <div class="tl-tags">
+                            <span class="tl-tag"
+                                style="background:rgba(124,77,255,0.1);color:var(--purple);border-color:rgba(124,77,255,0.3);">Ransomware</span>
+                            <span class="tl-tag"
+                                style="background:rgba(255,145,0,0.08);color:#ff9100;border-color:rgba(255,145,0,0.25);">Santé</span>
+                        </div>
+                        <div class="tl-title">Attaque de l'hôpital de Cannes — 61 Go de données exfiltrées par LockBit
+                        </div>
+                        <div class="tl-source">📡 Source : ZATAZ / ANSSI / Le Monde Informatique</div>
+                        <div class="tl-body">
+                            <p>Le centre hospitalier Simone Veil de Cannes a été victime d'une attaque par ransomware
+                                LockBit 3.0. Après le refus de payer la rançon, 61 Go de données sensibles (dossiers
+                                patients, données RH, documents financiers) ont été publiés sur le dark web. L'hôpital
+                                a fonctionné en mode dégradé pendant plusieurs semaines.</p>
+                            <div class="tl-impact">
+                                <strong>🔧 Impact SISR :</strong> Chiffrer les données sensibles au repos. Mettre en
+                                place des sauvegardes immuables testées régulièrement. Former le personnel aux
+                                procédures
+                                de fonctionnement dégradé. Surveillance 24/7 des endpoints (EDR).
+                            </div>
+                        </div>
+                        <a href="https://www.zataz.com" target="_blank" class="tl-article-link">📄 Lire sur ZATAZ</a>
+                    </div>
+                </div>
+
+                <!-- Article 5 -->
+                <div class="tl-item">
+                    <div class="tl-dot" style="background: var(--orange); box-shadow: 0 0 10px var(--orange);"></div>
+                    <div class="tl-date">Janvier 2025</div>
+                    <div class="tl-card">
+                        <div class="tl-tags">
+                            <span class="tl-tag"
+                                style="background:rgba(255,145,0,0.08);color:var(--orange);border-color:rgba(255,145,0,0.25);">Réseaux</span>
+                            <span class="tl-tag"
+                                style="background:rgba(124,77,255,0.1);color:var(--purple);border-color:rgba(124,77,255,0.3);">Cisco
+                                / Stormshield</span>
+                        </div>
+                        <div class="tl-title">Exploitation massive des VPN Cisco ASA et Stormshield SNS non mis à jour
+                        </div>
+                        <div class="tl-source">📡 Source : ANSSI / Cisco Talos Intelligence</div>
+                        <div class="tl-body">
+                            <p>Le groupe ALPHV/BlackCat exploite des failles sur les équipements VPN mal maintenus pour
+                                s'implanter dans les réseaux d'entreprise sans avoir besoin de phishing. Cette
+                                technique, appelée "living off the land", utilise des outils légitimes déjà présents sur
+                                le réseau pour se propager discrètement.</p>
+                            <div class="tl-impact">
+                                <strong>🔧 Impact SISR :</strong> Veille régulière sur les bulletins constructeurs
+                                (Cisco, Stormshield). Appliquer les mises à jour firmware immédiatement. Activer les
+                                journaux d'authentification VPN et configurer des alertes Nagios/N-Sight en cas de
+                                connexion anormale.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Article 6 — Décembre 2024 -->
+                <div class="tl-item">
+                    <div class="tl-dot" style="background: var(--cyan); box-shadow: 0 0 10px var(--cyan);"></div>
+                    <div class="tl-date">Décembre 2024</div>
+                    <div class="tl-card">
+                        <div class="tl-tags">
+                            <span class="tl-tag"
+                                style="background:rgba(0,229,255,0.08);color:var(--cyan);border-color:rgba(0,229,255,0.25);">Rapport
+                                annuel</span>
+                            <span class="tl-tag"
+                                style="background:rgba(124,77,255,0.1);color:var(--purple);border-color:rgba(124,77,255,0.3);">Tendances</span>
+                        </div>
+                        <div class="tl-title">Rapport ENISA 2024 : les ransomwares restent la menace n°1 en Europe</div>
+                        <div class="tl-source">📡 Source : ENISA Threat Landscape 2024</div>
+                        <div class="tl-body">
+                            <p>Le rapport annuel de l'Agence Européenne de Cybersécurité confirme que les ransomwares
+                                représentent toujours la principale menace cyber en Europe. Le rapport note une
+                                augmentation de 30% des incidents liés aux ransomwares, avec une tendance marquée vers
+                                la double extorsion et le ciblage des secteurs critiques (santé, énergie, transports).
+                            </p>
+                            <div class="tl-impact">
+                                <strong>🔧 Impact SISR :</strong> Renforcer les PRA/PCA en entreprise. Mettre en place
+                                des exercices de simulation d'incident (tabletop exercises). Évaluer la couverture
+                                d'assurance cyber.
+                            </div>
+                        </div>
+                        <a href="https://www.enisa.europa.eu/topics/cyber-threats/threats-and-trends" target="_blank"
+                            class="tl-article-link">📄 Lire le rapport</a>
+                    </div>
+                </div>
+
+                <!-- Article 7 — Octobre 2024 -->
+                <div class="tl-item">
+                    <div class="tl-dot" style="background: var(--orange); box-shadow: 0 0 10px var(--orange);"></div>
+                    <div class="tl-date">Octobre 2024</div>
+                    <div class="tl-card">
+                        <div class="tl-tags">
+                            <span class="tl-tag"
+                                style="background:rgba(255,145,0,0.08);color:var(--orange);border-color:rgba(255,145,0,0.25);">VPN</span>
+                            <span class="tl-tag"
+                                style="background:rgba(124,77,255,0.1);color:var(--purple);border-color:rgba(124,77,255,0.3);">Ransomware</span>
+                        </div>
+                        <div class="tl-title">Ransomware Akira cible les VPN Cisco sans MFA activé</div>
+                        <div class="tl-source">📡 Source : Sophos X-Ops / Cisco Talos Intelligence</div>
+                        <div class="tl-body">
+                            <p>Le groupe Akira exploite massivement les accès VPN Cisco AnyConnect dépourvus
+                                d'authentification multi-facteurs. Les attaquants utilisent des identifiants volés
+                                (credential stuffing) pour s'infiltrer dans les réseaux d'entreprise puis déployer
+                                le ransomware via des GPO ou PsExec.</p>
+                            <div class="tl-impact">
+                                <strong>🔧 Impact SISR :</strong> Imposer le MFA sur tous les accès VPN (TOTP, RADIUS).
+                                Surveiller les connexions VPN inhabituelles (horaires, géolocalisation). Désactiver
+                                les comptes inactifs dans l'AD.
+                            </div>
+                        </div>
+                        <a href="https://news.sophos.com/en-us/2024/akira-ransomware/" target="_blank"
+                            class="tl-article-link">📄 Lire l'article</a>
+                    </div>
+                </div>
+
+                <!-- Article 8 — Août 2024 -->
+                <div class="tl-item">
+                    <div class="tl-dot" style="background: var(--green); box-shadow: 0 0 10px var(--green);"></div>
+                    <div class="tl-date">Août 2024</div>
+                    <div class="tl-card">
+                        <div class="tl-tags">
+                            <span class="tl-tag"
+                                style="background:rgba(0,230,118,0.08);color:var(--green);border-color:rgba(0,230,118,0.25);">Supply
+                                Chain</span>
+                            <span class="tl-tag"
+                                style="background:rgba(255,145,0,0.08);color:#ff9100;border-color:rgba(255,145,0,0.25);">Zero-Day</span>
+                        </div>
+                        <div class="tl-title">Exploitation massive de MOVEit Transfer par le groupe Cl0p
+                            (CVE-2023-34362)</div>
+                        <div class="tl-source">📡 Source : CERT-FR / ANSSI / BleepingComputer</div>
+                        <div class="tl-body">
+                            <p>Le groupe Cl0p a exploité une vulnérabilité critique dans le logiciel de transfert de
+                                fichiers MOVEit Transfer, affectant plus de 2 500 organisations dans le monde. Cette
+                                attaque de type supply chain a permis l'exfiltration massive de données sans déploiement
+                                de ransomware classique, illustrant l'évolution vers l'extorsion pure.</p>
+                            <div class="tl-impact">
+                                <strong>🔧 Impact SISR :</strong> Auditer les logiciels de transfert de fichiers exposés
+                                sur internet. Mettre en place des WAF (Web Application Firewall). Appliquer le principe
+                                de moindre exposition des services.
+                            </div>
+                        </div>
+                        <a href="https://www.cert.ssi.gouv.fr/" target="_blank" class="tl-article-link">📄 Voir l'alerte
+                            CERT-FR</a>
+                    </div>
+                </div>
+
+                <!-- Article 9 — Juin 2024 -->
+                <div class="tl-item">
+                    <div class="tl-dot" style="background: var(--blue); box-shadow: 0 0 10px var(--blue);"></div>
+                    <div class="tl-date">Juin 2024</div>
+                    <div class="tl-card">
+                        <div class="tl-tags">
+                            <span class="tl-tag"
+                                style="background:rgba(41,121,255,0.08);color:var(--blue);border-color:rgba(41,121,255,0.25);">Law
+                                Enforcement</span>
+                            <span class="tl-tag"
+                                style="background:rgba(124,77,255,0.1);color:var(--purple);border-color:rgba(124,77,255,0.3);">Ransomware</span>
+                        </div>
+                        <div class="tl-title">Opération Cronos : démantèlement de LockBit par Europol et le FBI</div>
+                        <div class="tl-source">📡 Source : Europol / The Hacker News / ZATAZ</div>
+                        <div class="tl-body">
+                            <p>L'opération internationale « Cronos » coordonnée par Europol, le FBI et la NCA
+                                britannique
+                                a permis le démantèlement de l'infrastructure LockBit, le groupe de ransomware le plus
+                                actif au monde. Des serveurs, des clés de déchiffrement et des arrestations ont été
+                                effectués dans plusieurs pays. Le groupe a cependant tenté un retour quelques semaines
+                                après.</p>
+                            <div class="tl-impact">
+                                <strong>🔧 Impact SISR :</strong> Ces opérations montrent l'importance de la coopération
+                                internationale. Côté admin, vérifier si des IOC (Indicators of Compromise) LockBit sont
+                                présents dans les logs. Utiliser les outils de déchiffrement mis à disposition par No
+                                More Ransom.
+                            </div>
+                        </div>
+                        <a href="https://www.europol.europa.eu/" target="_blank" class="tl-article-link">📄 Communiqué
+                            Europol</a>
+                    </div>
+                </div>
+
+                <!-- Article 10 — Mars 2024 -->
+                <div class="tl-item">
+                    <div class="tl-dot" style="background: var(--purple); box-shadow: 0 0 10px var(--purple);"></div>
+                    <div class="tl-date">Mars 2024</div>
+                    <div class="tl-card">
+                        <div class="tl-tags">
+                            <span class="tl-tag"
+                                style="background:rgba(124,77,255,0.1);color:var(--purple);border-color:rgba(124,77,255,0.3);">Ransomware</span>
+                            <span class="tl-tag"
+                                style="background:rgba(255,145,0,0.08);color:#ff9100;border-color:rgba(255,145,0,0.25);">Santé</span>
+                        </div>
+                        <div class="tl-title">Attaque Change Healthcare : le plus grand vol de données médicales aux USA
+                        </div>
+                        <div class="tl-source">📡 Source : BleepingComputer / Krebs on Security</div>
+                        <div class="tl-body">
+                            <p>Le groupe ALPHV/BlackCat a mené une attaque dévastatrice contre Change Healthcare,
+                                filiale
+                                de UnitedHealth Group, paralysant le système de traitement des prescriptions médicales
+                                aux États-Unis pendant plusieurs semaines. Plus de 100 millions de patients ont été
+                                affectés, et une rançon de 22 millions de dollars aurait été versée.</p>
+                            <div class="tl-impact">
+                                <strong>🔧 Impact SISR :</strong> Segmenter les réseaux médicaux (zones DMZ pour les
+                                applications critiques). Chiffrer les données de santé au repos (AES-256). Plan de
+                                continuité d'activité obligatoire pour les systèmes HDS.
+                            </div>
+                        </div>
+                        <a href="https://www.bleepingcomputer.com/" target="_blank" class="tl-article-link">📄 Lire
+                            l'article</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ANALYSE -->
+    <section id="analyse" style="padding-top: 0;">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag">// 03. Analyse</div>
+                <h2 class="section-title">Bilan & <span>Perspectives</span></h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="analyse-grid">
+                <div class="analyse-card">
+                    <h4 style="color: var(--cyan);">🔍 Tendances Observées (2024–2026)</h4>
+                    <ul>
+                        <li>Ciblage croissant des hyperviseurs (Proxmox, VMware) et serveurs de sauvegarde</li>
+                        <li>Utilisation de l'IA générative (WormGPT) pour automatiser le phishing</li>
+                        <li>Attaques supply chain (MOVEit, SolarWinds) visant les fournisseurs de services</li>
+                        <li>Ransomware-as-a-Service (RaaS) : LockBit, ALPHV/BlackCat, Akira</li>
+                        <li>Double extorsion : chiffrement ET fuite de données sur le dark web</li>
+                        <li>Exploitation massive des VPN non patchés comme vecteur d'entrée</li>
+                        <li>Réglementation NIS2 : nouvelles exigences de notification et gouvernance</li>
+                    </ul>
+                </div>
+                <div class="analyse-card">
+                    <h4 style="color: var(--green);">✅ Bonnes Pratiques SISR</h4>
+                    <ul>
+                        <li>Segmentation réseau stricte (VLANs) et principe de moindre privilège</li>
+                        <li>Sauvegardes immuables hors-ligne (règle 3-2-1, PBS, Veeam)</li>
+                        <li>MFA obligatoire sur tous les accès (VPN, AD, O365, Proxmox)</li>
+                        <li>Patch management rigoureux : firmware, OS, applications</li>
+                        <li>Plan de Reprise d'Activité (PRA) testé annuellement</li>
+                        <li>Configuration SPF/DKIM/DMARC sur les domaines mail</li>
+                        <li>Conformité NIS2 : procédures d'incident, SIEM, audits réguliers</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-logo">PS<span>/</span>SYS</div>
+            <div class="footer-text">© 2026 Pierrick Saumade — BTS SIO SISR · Épreuve E5 — Veille Technologique</div>
+            <a href="index.html" class="footer-back">← Retour au Portfolio</a>
+        </div>
+    </footer>
+
+    <script>
+        /* ---- Canvas ---- */
+        (function () {
+            const canvas = document.getElementById('networkCanvas');
+            const ctx = canvas.getContext('2d');
+            let W, H, nodes = [], mouse = { x: -9999, y: -9999 };
+            function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+            function init() {
+                nodes = [];
+                for (let i = 0; i < 60; i++) nodes.push({
+                    x: Math.random() * W, y: Math.random() * H,
+                    vx: (Math.random() - 0.5) * 0.45, vy: (Math.random() - 0.5) * 0.45,
+                    r: Math.random() * 2 + 1, pulse: Math.random() * Math.PI * 2,
+                    c: Math.random() > 0.5 ? '0,229,255' : '124,77,255'
+                });
+            }
+            function draw() {
+                ctx.clearRect(0, 0, W, H);
+                nodes.forEach(n => {
+                    n.x += n.vx; n.y += n.vy; n.pulse += 0.02;
+                    if (n.x < 0 || n.x > W) n.vx *= -1;
+                    if (n.y < 0 || n.y > H) n.vy *= -1;
+                    const dx = mouse.x - n.x, dy = mouse.y - n.y;
+                    if (Math.sqrt(dx * dx + dy * dy) < 120) { n.x += dx * 0.008; n.y += dy * 0.008; }
+                    ctx.beginPath();
+                    ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(${n.c}, ${0.5 + 0.3 * Math.sin(n.pulse)})`;
+                    ctx.shadowColor = `rgba(${n.c}, 0.5)`; ctx.shadowBlur = 8;
+                    ctx.fill(); ctx.shadowBlur = 0;
+                });
+                for (let i = 0; i < nodes.length; i++) for (let j = i + 1; j < nodes.length; j++) {
+                    const a = nodes[i], b = nodes[j];
+                    const dx = a.x - b.x, dy = a.y - b.y, d = Math.sqrt(dx * dx + dy * dy);
+                    if (d < 130) {
+                        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+                        ctx.strokeStyle = `rgba(0,229,255,${(1 - d / 130) * 0.22})`; ctx.lineWidth = 1; ctx.stroke();
+                    }
+                }
+                requestAnimationFrame(draw);
+            }
+            window.addEventListener('resize', () => { resize(); init(); });
+            window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+            resize(); init(); draw();
+        })();
+
+        /* ---- Navbar scroll ---- */
+        (function () {
+            const nav = document.getElementById('navbar');
+            window.addEventListener('scroll', () => {
+                nav.classList.toggle('scrolled', window.scrollY > 20);
+            });
+        })();
+
+        /* ---- Mobile menu ---- */
+        function toggleMenu() {
+            document.getElementById('navLinks').classList.toggle('open');
+            document.getElementById('hamburger').classList.toggle('open');
+        }
+        document.querySelectorAll('#navLinks a').forEach(a => {
+            a.addEventListener('click', () => {
+                document.getElementById('navLinks').classList.remove('open');
+                document.getElementById('hamburger').classList.remove('open');
+            });
+        });
+
+        /* ---- Modals Outils ---- */
+        let currentModal = null;
+
+        function openModal(toolId) {
+            const modal = document.getElementById('modal-' + toolId);
+            if (modal) {
+                currentModal = modal;
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeModal() {
+            if (currentModal) {
+                currentModal.classList.remove('active');
+                document.body.style.overflow = '';
+                currentModal = null;
+            }
+        }
+
+        function closeModalOutside(event) {
+            if (event.target === currentModal) {
+                closeModal();
+            }
+        }
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeModal();
+        });
+    </script>
+</body>
+
+</html>
