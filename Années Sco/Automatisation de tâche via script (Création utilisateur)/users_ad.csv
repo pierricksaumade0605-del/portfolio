@@ -1,0 +1,14 @@
+Username,Password,DisplayName,GivenName,Surname,OU,Groups,Description
+invite,Invite@2024!,Invité Utilisateur,Invité,Utilisateur,OU=Invites,GG_Invites,Compte invité
+instructeur1,Instruct1@2024!,Instructeur Un,Instructeur,Un,OU=Instructeurs,GG_Instructeurs,Instructeur niveau 1
+instructeur2,Instruct2@2024!,Instructeur Deux,Instructeur,Deux,OU=Instructeurs,GG_Instructeurs,Instructeur niveau 2
+instructeur3,Instruct3@2024!,Instructeur Trois,Instructeur,Trois,OU=Instructeurs,GG_Instructeurs,Instructeur niveau 3
+instructeur4,Instruct4@2024!,Instructeur Quatre,Instructeur,Quatre,OU=Instructeurs,GG_Instructeurs,Instructeur niveau 4
+instructeur5,Instruct5@2024!,Instructeur Cinq,Instructeur,Cinq,OU=Instructeurs,GG_Instructeurs,Instructeur niveau 5
+instructeur6,Instruct6@2024!,Instructeur Six,Instructeur,Six,OU=Instructeurs,GG_Instructeurs,Instructeur niveau 6
+instructeur7,Instruct7@2024!,Instructeur Sept,Instructeur,Sept,OU=Instructeurs,GG_Instructeurs,Instructeur niveau 7
+secretaire,Secretaire@2024!,Secrétaire,Secrétaire,Administration,OU=Administration,GG_Administration,Secrétaire
+president,President@2024!,Président,Président,Direction,OU=Direction,GG_Direction,Président
+tresorier,Tresorier@2024!,Trésorier,Trésorier,Direction,OU=Direction,GG_Direction,Trésorier
+mecanicien1,Mecano1@2024!,Mécanicien Un,Mécanicien,Un,OU=Atelier,GG_Atelier,Mécanicien 1
+mecanicien2,Mecano2@2024!,Mécanicien Deux,Mécanicien,Deux,OU=Atelier,GG_Atelier,Mécanicien 2
